@@ -2,10 +2,60 @@
 //
 
 #include <iostream>
-
+#include <vector>
+#include <iomanip>
+using namespace std;
+namespace functions1
+{
+    double r(double l)
+    {
+        return  1. / l;
+    }
+    double b(double z, double l, double temp_z)
+    {
+        if (z == l)
+            return r(z);
+        else
+        {         
+            return b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
+        }
+    }
+    double a(double z, double l, double temp_z)
+    {
+        if (z == l && z != 0)
+            return 1;
+        else if (z == 0)
+            return 0;
+        else
+        {
+         
+            return a(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
+        }
+    }
+}
+void PrintVector(vector<double> V)
+{
+    cout << fixed << std::setprecision(5);
+    cout << "-------------------------------------------------------------" << endl;
+    for (int i = 0; i < V.size(); i++)
+    {
+        cout << setw(7) << V[i] << "  " << endl;
+    }
+    cout << "-------------------------------------------------------------" << endl;
+}
+using namespace functions1;
 int main()
 {
-    std::cout << "Hello World!\n";
+    vector<double> vect_a, vect_b;
+    double l = 1, temp_z = 0.01;
+    for (double i = 0.01; i <= l; i += temp_z)
+    {
+        vect_a.push_back( a(i, l, temp_z));
+        vect_b.push_back( b(i, l, temp_z));
+    }
+    PrintVector(vect_a);
+    PrintVector(vect_b);
+    return 0;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
