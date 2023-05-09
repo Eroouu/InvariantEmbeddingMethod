@@ -16,26 +16,26 @@ namespace functions1
         if (abs(z - l) < 1e-5)
             return r(z);
         else
-        {         
+        {
             return b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
         }
     }
     double a(double z, double l, double temp_z)
     {
-        if ( abs(z - l) < 1e-5 && z != 0)
+        if (abs(z - l) < 1e-5 && z != 0)
             return 1;
         else if (z == 0)
             return 0;
         else
         {
-         
+
             return a(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
         }
     }
 
     double s(double l)
     {
-        return   1./l;
+        return   1. / l;
     }
     double u(double z, double l, double temp_z)
     {
@@ -43,7 +43,7 @@ namespace functions1
             return s(z);
         else
         {
-            return u(z, l - temp_z, temp_z) + (- s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
+            return u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
         }
     }
     double y(double z, double l, double temp_z)
@@ -67,23 +67,23 @@ namespace functions2
     double q = 1;
     double EI_x = 1;
     double temp_l = 0.1;
-    
+
     double r(double l)
     {
         double temp;
-        if ( abs(l) <= 0.11)
-            temp =   1. / l;
+        if (abs(l) <= 0.11)
+            temp = 1. / l;
         else
-            temp =  r(l - temp_l) + (q / EI_x * (l - temp_l) * (l - temp_l) / 2 - r(l - temp_l) * r(l - temp_l)) * temp_l;
+            temp = r(l - temp_l) + (q / EI_x * (l - temp_l) * (l - temp_l) / 2 - r(l - temp_l) * r(l - temp_l)) * temp_l;
         return temp;
     }
-    
-   
+
+
     double b(double z, double l, double temp_z)
     {
         double temp;
         if (abs(z - l) < 1e-5)
-            temp =  r(z);
+            temp = r(z);
         else
         {
             temp = b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
@@ -110,9 +110,9 @@ namespace functions2
         else
         {
             double w1 = s(l - temp_l), w2 = r(l - temp_l);
-            return s(l - temp_l) + (- s(l - temp_l) * r(l - temp_l)) * temp_l;
+            return s(l - temp_l) + (-s(l - temp_l) * r(l - temp_l)) * temp_l;
         }
-            
+
     }
     double u(double z, double l, double temp_z)
     {
@@ -121,7 +121,7 @@ namespace functions2
             temp = s(z);
         else
         {
-            temp =  u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
+            temp = u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
         }
         return temp;
     }
@@ -129,9 +129,9 @@ namespace functions2
     {
         double temp;
         if (abs(z - l) < 1e-5 && z != 0)
-            temp =  0;
+            temp = 0;
         else if (z == 0)
-            temp =  0;
+            temp = 0;
         else
         {
             temp = y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
@@ -151,14 +151,8 @@ namespace functions3
 
     double r(double l)
     {
-        double temp;
-        if (abs(l) <= 0.11)
-            temp = 1. / l;
-        else
-            temp = r(l - temp_l) + (q / EI_x * (l - temp_l) * (l - temp_l) / 2 - r(l - temp_l) * r(l - temp_l) ) * temp_l;
-        return temp;
+        return 1. / (l);
     }
-
 
     double b(double z, double l, double temp_z)
     {
@@ -186,12 +180,10 @@ namespace functions3
 
     double s(double l)
     {
-        double temp;
         if (abs(l) < 1e-5)
-            temp = 0;
+            return 0;
         else
-            temp = s(l - temp_l) + (-s(l - temp_l) * r(l - temp_l)) * temp_l;
-        return 0;
+            return 1. / l;
     }
     double u(double z, double l, double temp_z)
     {
@@ -232,22 +224,22 @@ void PrintVector(vector<double> V)
     }
     cout << "-------------------------------------------------------------" << endl;
 }
-using namespace functions1;
+using namespace functions3;
 int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
-    double l = 1, temp_z = 0.1;
+    double l = 10, temp_z = 0.1;
     for (double i = 0.0; i <= l; i += temp_z)
     {
-        vect_a.push_back( u(i, l, temp_z));
-        vect_b.push_back( y(i, l, temp_z));
+        vect_a.push_back(a(i, l, temp_z));
+        vect_b.push_back(y(i, l, temp_z));
         //vect_y.push_back( y(i, l, temp_z));
         //vect_u.push_back( u(i, l, temp_z));
     }
     PrintVector(vect_a);
     PrintVector(vect_b);
     //cout << r(0.4);
-    
+
     vector<double> v_r(1. / temp_z - 1, 0);
     for (int i = 0; i < v_r.size(); i++)
     {
@@ -257,7 +249,6 @@ int main()
 
     return 0;
 }
-
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
