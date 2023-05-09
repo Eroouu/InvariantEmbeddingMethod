@@ -54,6 +54,7 @@ namespace functions1
             return 0;
         else
         {
+            double w1 = y(z, l - temp_z, temp_z), w2 = -s(l - temp_z), w3 = a(z, l - temp_z, temp_z);
             return y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
         }
     }
@@ -108,6 +109,7 @@ namespace functions2
             return 0;
         else
         {
+            double w1 = s(l - temp_l), w2 = r(l - temp_l);
             return s(l - temp_l) + (- s(l - temp_l) * r(l - temp_l)) * temp_l;
         }
             
@@ -230,15 +232,15 @@ void PrintVector(vector<double> V)
     }
     cout << "-------------------------------------------------------------" << endl;
 }
-using namespace functions2;
+using namespace functions1;
 int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
     double l = 1, temp_z = 0.1;
-    for (double i = 0.1; i < l; i += temp_z)
+    for (double i = 0.0; i <= l; i += temp_z)
     {
-        vect_a.push_back( y(i, l, temp_z));
-        vect_b.push_back( u(i, l, temp_z));
+        vect_a.push_back( u(i, l, temp_z));
+        vect_b.push_back( y(i, l, temp_z));
         //vect_y.push_back( y(i, l, temp_z));
         //vect_u.push_back( u(i, l, temp_z));
     }
@@ -246,10 +248,10 @@ int main()
     PrintVector(vect_b);
     //cout << r(0.4);
     
-    vector<double> v_r(1. / temp_l - 1, 0);
+    vector<double> v_r(1. / temp_z - 1, 0);
     for (int i = 0; i < v_r.size(); i++)
     {
-        v_r[i] = s(temp_l + i * temp_l);
+        v_r[i] = s(temp_z + i * temp_z);
     }
     PrintVector(v_r);
 
