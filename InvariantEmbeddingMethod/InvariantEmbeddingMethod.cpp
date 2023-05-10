@@ -161,7 +161,7 @@ namespace functions3
             temp = r(z);
         else
         {
-            temp = b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
+            temp = b(z, l - temp_z, temp_z) + ( - r(l - temp_z) * b(z, l - temp_z, temp_z)) * temp_z;
         }
         return temp;
     }
@@ -174,7 +174,7 @@ namespace functions3
         else
         {
 
-            return a(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
+            return a(z, l - temp_z, temp_z) + ( - r(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
         }
     }
 
@@ -225,10 +225,51 @@ void PrintVector(vector<double> V)
     cout << "-------------------------------------------------------------" << endl;
 }
 using namespace functions3;
+double fb(double z,double len, double temp_z)
+{
+    double ans = (-r(len) * b(z, len, temp_z));
+    return ans;
+}
+double fa(double z,double len, double temp_z)
+{
+    double ans = (-r(len) * a(z, len, temp_z));
+    return ans;
+}
+double fu(double z,double len, double temp_z)
+{
+    double ans = (-s(len) * u(z, len, temp_z));
+    return ans;
+}
+double fy(double z,double len, double temp_z)
+{
+    double ans = (-s(len) * y(z, len, temp_z));
+    return ans;
+}
+
+//vector <double> RKequation(double x0, double y0, double h, double deltaX) {
+//    vector<double> y;
+//    vector<double> x;
+//    double n;
+//    n = deltaX / h;
+//    x.push_back(x0);
+//    y.push_back(y0);
+//    for (int i = 1; i <= n; i++) {
+//        double k1, k2, k3, k4;
+//        k1 = derrative(x[x.size() - 1], y[y.size() - 1]);
+//        k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
+//        k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
+//        k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
+//        double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+//        y.push_back(ytemp);
+//        x.push_back(x[x.size() - 1] + h);
+//    }
+//    return y;
+//}
 int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
-    double l = 10, temp_z = 0.1;
+    double temp_z = 0.1;
+    double l = 10;
     for (double i = 0.0; i <= l; i += temp_z)
     {
         vect_a.push_back(a(i, l, temp_z));
