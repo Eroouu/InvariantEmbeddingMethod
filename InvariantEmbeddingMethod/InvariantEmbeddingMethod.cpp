@@ -269,7 +269,7 @@ int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
     double temp_z = 0.1;
-    double l = 10;
+    double l = 1;
     for (double i = 0.0; i <= l; i += temp_z)
     {
         vect_a.push_back(a(i, l, temp_z));
