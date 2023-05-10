@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <vector>
 using namespace std;
 namespace functions1
 {
@@ -246,25 +247,52 @@ double fy(double z,double len, double temp_z)
     return ans;
 }
 
-//vector <double> RKequation(double x0, double y0, double h, double deltaX) {
-//    vector<double> y;
-//    vector<double> x;
-//    double n;
-//    n = deltaX / h;
-//    x.push_back(x0);
-//    y.push_back(y0);
-//    for (int i = 1; i <= n; i++) {
-//        double k1, k2, k3, k4;
-//        k1 = derrative(x[x.size() - 1], y[y.size() - 1]);
-//        k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
-//        k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
-//        k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
-//        double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-//        y.push_back(ytemp);
-//        x.push_back(x[x.size() - 1] + h);
-//    }
-//    return y;
-//}
+vector <double> RKequation(double z0,double len,double temp_z, int num) {
+    vector<double> z;
+    vector<double> A;
+    double n;
+    n = len / temp_z;
+    z.push_back(z0);
+    switch (num)
+    {
+    case 1: // 
+        A.push_back(b(z0, len, temp_z));
+        for (int i = 1; i <= n; i++) {
+            double k1, k2, k3, k4;
+            k1 = fb(z[z.size() - 1], len, temp_z);
+            k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
+            k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
+            k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
+            double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+            y.push_back(ytemp);
+            x.push_back(x[x.size() - 1] + h);
+        }
+        break;
+    case 2: // 
+        A.push_back(a(z0, len, temp_z));
+        break;
+    case 3: // 
+        A.push_back(u(z0, len, temp_z));
+        break;
+    case 4: // 
+        A.push_back(y(z0, len, temp_z));
+        break;
+    default:
+        cout << "It is supposed to be 1-b"<< endl;
+        break;
+    }
+    for (int i = 1; i <= n; i++) {
+        double k1, k2, k3, k4;
+        k1 = derrative(x[x.size() - 1], y[y.size() - 1]);
+        k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
+        k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
+        k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
+        double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+        y.push_back(ytemp);
+        x.push_back(x[x.size() - 1] + h);
+    }
+    return y;
+}
 int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
