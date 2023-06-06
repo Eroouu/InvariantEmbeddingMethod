@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 #include <iomanip>
 using namespace std;
 namespace functions1
@@ -148,7 +149,10 @@ namespace functions3
     double q = 1;
     double EI_x = 1;
     double temp_l = 1;
-
+    double f(double z, double l)
+    {
+        return (q * l * z / 2. - q * z * z / 2) / EI_x;
+    }
     double r(double l)
     {
         return 1. / (l);
@@ -229,17 +233,51 @@ void PrintVector(vector<double> V)
     cout << "-------------------------------------------------------------" << endl;
 }
 using namespace functions3;
-double Private_Solution(double z)
+double RK(double etta, double l)
 {
-    return q * z * z * z * z / (24 * EI_x);
+    int n = 100;
+    double h = 1 / (double)n;
+    double y = 0, z = etta;
+    double k1, k2, k3, k4, m1, m2 , m3 , m4;
+    for (int i = 0; i < n; i++)
+    {
+        k1 = f(z, l);
+        k2 = f(z + k1 / 2., l);
+        k3 = f(z + k2 / 2., l);
+        k4 = f(z + k3, l);
+        m1 = z;
+        m2 = z + m1 / 2.;
+        m3 = z + m2 / 2.;
+        m4 = z + m3;
+        z += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+        y += h * (m1 + 2 * m2 + 2 * m3 + m4) / 6;
+    }
+    return y;
 }
-void Targetting_Method()
+void Targetting_Method( double l)
 {
-
+    double tau_2 = 5, tau_1 = -5;
+    do
+    {
+        if (RK(tau_1, l) * RK(tau_2, l) < 0)
+        {
+            if (RK(tau_1, l) * RK((tau_2 + tau_1) / 2, l) < 0)
+                tau_2 = (tau_2 + tau_1) / 2;
+            else 
+                tau_1 = (tau_2 + tau_1) / 2;
+        }
+        else
+        {
+            tau_2 += 5;
+            tau_1 -= 5;
+        }
+        cout << " tau _1 = " << tau_1 << " " << "tau_2= " << tau_2 << endl;
+    } while ( abs(tau_2 - tau_1) > 1e-6);
+    cout << tau_2 << " " <<  RK(tau_2, l) << endl;
 }
 int main()
 {
-    vector<double> vect_a, vect_b, vect_y, vect_u;
+    /*vector<double> vect_a, vect_b, vect_y, vect_u;
     double l = 1, temp_z = 0.1;
     for (double i = 0.; i <= l; i += temp_z)
     {
@@ -255,8 +293,8 @@ int main()
     cout << "vector y" << endl;
     PrintVector(vect_a);
     cout << y(0.1, 1, 0.1) <<  endl;
-    cout << " ///////////////////" << endl;
-
+    cout << " ///////////////////" << endl;*/
+    Targetting_Method(1);
 
     return 0;
 }
