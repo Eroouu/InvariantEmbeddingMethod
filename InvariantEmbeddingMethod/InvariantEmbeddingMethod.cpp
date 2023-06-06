@@ -147,7 +147,7 @@ namespace functions3
 {
     double q = 1;
     double EI_x = 1;
-    double temp_l = 0.1;
+    double temp_l = 1;
 
     double r(double l)
     {
@@ -181,15 +181,17 @@ namespace functions3
     double s(double l)
     {
         if (abs(l) < 1e-5)
-            return 0;
+            return 0.;
+        else if (l <= 0.1)
+            return l;
         else
-            return 1. / l;
+            return 1. / l ;
     }
     double u(double z, double l, double temp_z)
     {
         double temp;
         if (abs(z - l) < 1e-5)
-            temp = s(z);
+            temp = s(l);
         else
         {
             temp = u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
@@ -205,11 +207,13 @@ namespace functions3
             temp = 0;
         else
         {
-            temp = y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
+            temp = 0;
+            temp += y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
         }
         return temp;
     }
 }
+
 /// <summary>
 /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// </summary>
@@ -225,27 +229,34 @@ void PrintVector(vector<double> V)
     cout << "-------------------------------------------------------------" << endl;
 }
 using namespace functions3;
+double Private_Solution(double z)
+{
+    return q * z * z * z * z / (24 * EI_x);
+}
+void Targetting_Method()
+{
+
+}
 int main()
 {
     vector<double> vect_a, vect_b, vect_y, vect_u;
-    double l = 10, temp_z = 0.1;
-    for (double i = 0.0; i <= l; i += temp_z)
+    double l = 1, temp_z = 0.1;
+    for (double i = 0.; i <= l; i += temp_z)
     {
-        vect_a.push_back(a(i, l, temp_z));
-        vect_b.push_back(y(i, l, temp_z));
-        //vect_y.push_back( y(i, l, temp_z));
-        //vect_u.push_back( u(i, l, temp_z));
+        vect_a.push_back(y(i, l, temp_z));
+        vect_b.push_back(u(i, l, temp_z));
     }
+    vector<double> v_r;
+    for (double  i = 0.1; i <= 1; i= i + 0.1)
+    {
+        v_r.push_back(y(0.1, i, 0.1));
+        v_r.push_back(i);
+    }
+    cout << "vector y" << endl;
     PrintVector(vect_a);
-    PrintVector(vect_b);
-    //cout << r(0.4);
+    cout << y(0.1, 1, 0.1) <<  endl;
+    cout << " ///////////////////" << endl;
 
-    vector<double> v_r(1. / temp_z - 1, 0);
-    for (int i = 0; i < v_r.size(); i++)
-    {
-        v_r[i] = s(temp_z + i * temp_z);
-    }
-    PrintVector(v_r);
 
     return 0;
 }
