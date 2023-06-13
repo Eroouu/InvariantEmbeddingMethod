@@ -5,318 +5,63 @@
 #include <vector>
 #include <iomanip>
 #include <vector>
+#include <tuple>
 using namespace std;
-namespace functions1
+namespace m751
 {
-    double r(double l)
-    {
-        return  1. / l;
-    }
-    double b(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5)
-            return r(z);
-        else
-        {
-            return b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
-        }
-    }
-    double a(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5 && z != 0)
-            return 1;
-        else if (z == 0)
-            return 0;
-        else
-        {
-
-            return a(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
-        }
-    }
-
-    double s(double l)
-    {
-        return   1. / l;
-    }
-    double u(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5)
-            return s(z);
-        else
-        {
-            return u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
-        }
-    }
-    double y(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5 && z != 0)
-            return 0;
-        else if (z == 0)
-            return 0;
-        else
-        {
-            double w1 = y(z, l - temp_z, temp_z), w2 = -s(l - temp_z), w3 = a(z, l - temp_z, temp_z);
-            return y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
-        }
-    }
+	double f(double u)
+	{
+		return u;
+	}
+	double g(double y,double r, double x) // возможен 3й аргумент
+	{
+		return y + 2 * x;
+	}
+	double a = 0, c = 0;
 }
-/// <summary>
-/// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// </summary>
-namespace functions2
+using namespace m751;
+double r(double a, double c,double delta)
 {
-    double q = 1;
-    double EI_x = 1;
-    double temp_l = 0.1;
-
-    double r(double l)
-    {
-        double temp;
-        if (abs(l) <= 0.11)
-            temp = 1. / l;
-        else
-            temp = r(l - temp_l) + (q / EI_x * (l - temp_l) * (l - temp_l) / 2 - r(l - temp_l) * r(l - temp_l)) * temp_l;
-        return temp;
-    }
-
-
-    double b(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5)
-            temp = r(z);
-        else
-        {
-            temp = b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
-        }
-        return temp;
-    }
-    double a(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5 && abs(z) > 1e-5)
-            return 1;
-        else if (z == 0)
-            return 0;
-        else
-        {
-
-            return a(z, l - temp_z, temp_z) * (1. - r(l - temp_z) * temp_z);
-        }
-    }
-    double s(double l)
-    {
-        double temp;
-        if (abs(l) < 1e-5)
-            return 0;
-        else
-        {
-            double w1 = s(l - temp_l), w2 = r(l - temp_l);
-            return s(l - temp_l) + (-s(l - temp_l) * r(l - temp_l)) * temp_l;
-        }
-
-    }
-    double u(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5)
-            temp = s(z);
-        else
-        {
-            temp = u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
-        }
-        return temp;
-    }
-    double y(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5 && z != 0)
-            temp = 0;
-        else if (z == 0)
-            temp = 0;
-        else
-        {
-            temp = y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
-        }
-        return temp;
-    }
+	return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
 }
-/// <summary>
-/// /////////////////////////////////////////////////////////////////////////
-/// </summary>
-/// <param name="V"></param>
-namespace functions3
+void Outcmd(vector<double> y, vector<double> u, double h);
+void EilerMeth(double h)
 {
-    double q = 1;
-    double EI_x = 1;
-    double temp_l = 0.1;
-
-    double r(double l)
-    {
-        return 1. / (l);
-    }
-
-    double b(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5)
-            temp = r(z);
-        else
-        {
-            temp = b(z, l - temp_z, temp_z) + ( - r(l - temp_z) * b(z, l - temp_z, temp_z)) * temp_z;
-        }
-        return temp;
-    }
-    double a(double z, double l, double temp_z)
-    {
-        if (abs(z - l) < 1e-5 && abs(z) > 1e-5)
-            return 1;
-        else if (z == 0)
-            return 0;
-        else
-        {
-
-            return a(z, l - temp_z, temp_z) + ( - r(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
-        }
-    }
-
-    double s(double l)
-    {
-        if (abs(l) < 1e-5)
-            return 0;
-        else
-            return 1. / l;
-    }
-    double u(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5)
-            temp = s(z);
-        else
-        {
-            temp = u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
-        }
-        return temp;
-    }
-    double y(double z, double l, double temp_z)
-    {
-        double temp;
-        if (abs(z - l) < 1e-5 && z != 0)
-            temp = 0;
-        else if (z == 0)
-            temp = 0;
-        else
-        {
-            temp = y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
-        }
-        return temp;
-    }
+	vector<double> y, u;
+	double delta = 0.1;
+	double x = 0;
+	y.push_back(c);
+	u.push_back(r(a, c, delta));
+	while (x <= 1)
+	{
+		double tempY, tempU;
+		double Yn, Un;
+		Yn = y[y.size() - 1];
+		Un = u[u.size() - 1];
+		tempY = Yn + h * f(Un);
+		tempU = Un + h * g(Yn, 0, x);
+		x += h;
+		y.push_back(tempY);
+		u.push_back(tempU);
+	}
+	Outcmd(y, u, h);
 }
-/// <summary>
-/// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// </summary>
-/// <param name="V"></param>
-void PrintVector(vector<double> V)
+void Outcmd(vector<double> y, vector<double> u,double h)
 {
-    cout << fixed << std::setprecision(5);
-    cout << "-------------------------------------------------------------" << endl;
-    for (int i = 0; i < V.size(); i++)
-    {
-        cout << setw(7) << V[i] << "  " << endl;
-    }
-    cout << "-------------------------------------------------------------" << endl;
-}
-using namespace functions3;
-double fb(double z,double len, double temp_z)
-{
-    double ans = (-r(len) * b(z, len, temp_z));
-    return ans;
-}
-double fa(double z,double len, double temp_z)
-{
-    double ans = (-r(len) * a(z, len, temp_z));
-    return ans;
-}
-double fu(double z,double len, double temp_z)
-{
-    double ans = (-s(len) * u(z, len, temp_z));
-    return ans;
-}
-double fy(double z,double len, double temp_z)
-{
-    double ans = (-s(len) * y(z, len, temp_z));
-    return ans;
-}
-
-vector <double> RKequation(double z0,double len,double temp_z, int num) {
-    vector<double> z;
-    vector<double> A;
-    double n;
-    n = len / temp_z;
-    z.push_back(z0);
-    switch (num)
-    {
-    case 1: // 
-        A.push_back(b(z0, len, temp_z));
-        for (int i = 1; i <= n; i++) {
-            double k1, k2, k3, k4;
-            k1 = fb(z[z.size() - 1], len, temp_z);
-            k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
-            k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
-            k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
-            double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-            y.push_back(ytemp);
-            x.push_back(x[x.size() - 1] + h);
-        }
-        break;
-    case 2: // 
-        A.push_back(a(z0, len, temp_z));
-        break;
-    case 3: // 
-        A.push_back(u(z0, len, temp_z));
-        break;
-    case 4: // 
-        A.push_back(y(z0, len, temp_z));
-        break;
-    default:
-        cout << "It is supposed to be 1-b"<< endl;
-        break;
-    }
-    for (int i = 1; i <= n; i++) {
-        double k1, k2, k3, k4;
-        k1 = derrative(x[x.size() - 1], y[y.size() - 1]);
-        k2 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k1 / 2);
-        k3 = derrative(x[x.size() - 1] + h / 2, y[y.size() - 1] + h * k2 / 2);
-        k4 = derrative(x[x.size() - 1] + h, y[y.size() - 1] + h * k3);
-        double ytemp = y[y.size() - 1] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-        y.push_back(ytemp);
-        x.push_back(x[x.size() - 1] + h);
-    }
-    return y;
+	cout << "table of contents: x u y columns\n";
+	double tempX = 0;
+	for (int i = 0; i < y.size(); i++)
+	{
+		double  tempY, tempU;
+		tempY = y[i];
+		tempU = u[i];
+		cout << tempX << " " << tempU << " " << tempY << endl;
+		tempX += h;
+	}
 }
 int main()
 {
-    vector<double> vect_a, vect_b, vect_y, vect_u;
-    double temp_z = 0.1;
-    double l = 1;
-    for (double i = 0.0; i <= l; i += temp_z)
-    {
-        vect_a.push_back(a(i, l, temp_z));
-        vect_b.push_back(y(i, l, temp_z));
-        //vect_y.push_back( y(i, l, temp_z));
-        //vect_u.push_back( u(i, l, temp_z));
-    }
-    PrintVector(vect_a);
-    PrintVector(vect_b);
-    //cout << r(0.4);
-
-    vector<double> v_r(1. / temp_z - 1, 0);
-    for (int i = 0; i < v_r.size(); i++)
-    {
-        v_r[i] = s(temp_z + i * temp_z);
-    }
-    PrintVector(v_r);
-
-    return 0;
+	EilerMeth(0.01);
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
