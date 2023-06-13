@@ -22,13 +22,16 @@ namespace m751
 using namespace m751;
 double r(double a, double c,double delta)
 {
-	return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
+	if (a == 0)
+		return 0;
+	else
+		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
 }
 void Outcmd(vector<double> y, vector<double> u, double h);
 void EilerMeth(double h)
 {
 	vector<double> y, u;
-	double delta = 0.1;
+	double delta = -0.1;
 	double x = 0;
 	y.push_back(c);
 	u.push_back(r(a, c, delta));
