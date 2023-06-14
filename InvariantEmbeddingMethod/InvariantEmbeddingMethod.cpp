@@ -27,8 +27,30 @@ double r(double a, double c,double delta)
 	else
 		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
 }
+double RightAns(double x)
+{
+	double ans = -2 * exp(-x) / (exp(1) + exp(-1)) + 2 * exp(x) / (exp(1) + exp(-1)) - 2 * x;
+	return ans;
+}
+vector<double> EilerMeth(double h);
+double ErrorCount()
+{
+	double h = 0.01;
+	vector<double> y = EilerMeth(h);
+	double x = 0;
+	double err = 0;
+	for (int i = 0; i < y.size(); i++) 
+	{
+		if (abs(y[i]-RightAns(x))>err)
+		{
+			err = abs(y[i] - RightAns(x));
+		}
+		x += h;
+	}
+	return err;
+}
 void Outcmd(vector<double> y, vector<double> u, double h);
-void EilerMeth(double h)
+vector<double> EilerMeth(double h)
 {
 	vector<double> y, u;
 	double delta = -0.1;
@@ -48,6 +70,7 @@ void EilerMeth(double h)
 		u.push_back(tempU);
 	}
 	Outcmd(y, u, h);
+	return y;
 }
 void Outcmd(vector<double> y, vector<double> u,double h)
 {
@@ -64,7 +87,9 @@ void Outcmd(vector<double> y, vector<double> u,double h)
 }
 int main()
 {
-	EilerMeth(0.01);
+	//EilerMeth(0.01);
+	double err =ErrorCount();
+	cout << "Error is: " << err;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
