@@ -39,12 +39,14 @@ double ErrorCount()
 	vector<double> y = EilerMeth(h);
 	double x = 0;
 	double err = 0;
+	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < y.size(); i++) 
 	{
 		if (abs(y[i]-RightAns(x))>err)
 		{
 			err = abs(y[i] - RightAns(x));
 		}
+		cout << y[i] << "  " << RightAns(x) << "  " << abs(y[i] - RightAns(x)) << endl;
 		x += h;
 	}
 	return err;
@@ -69,7 +71,7 @@ vector<double> EilerMeth(double h)
 		y.push_back(tempY);
 		u.push_back(tempU);
 	}
-	Outcmd(y, u, h);
+	//Outcmd(y, u, h);
 	return y;
 }
 void Outcmd(vector<double> y, vector<double> u,double h)
