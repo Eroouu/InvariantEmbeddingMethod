@@ -7,29 +7,30 @@
 #include <vector>
 #include <tuple>
 using namespace std;
-namespace m751
+namespace m752
 {
 	double f(double u)
 	{
 		return u;
 	}
-	double g(double y,double r, double x) // возможен 3й аргумент
+	double g(double x,double u, double l) // возможен 3й аргумент
 	{
-		return y + 2 * x;
+		return 1 - u;
 	}
-	double a = 0, c = 0;
+
 }
-using namespace m751;
-double r(double a, double c,double delta)
+using namespace m752;
+double r(double l)
 {
-	if (a == 0)
-		return 0;
-	else
-		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
+	return (exp(2 * l) + 1) / (exp(2 * l) - 1);
+}
+double ds(double s_now, double l)
+{
+	return 1 - s_now - s_now * r(l);
 }
 double RightAns(double x)
 {
-	double ans = -2 * exp(-x) / (exp(1) + exp(-1)) + 2 * exp(x) / (exp(1) + exp(-1)) - 2 * x;
+	double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
 	return ans;
 }
 vector<double> EilerMeth(double h);
@@ -52,21 +53,58 @@ double ErrorCount()
 	return err;
 }
 void Outcmd(vector<double> y, vector<double> u, double h);
+
+double b_l(double z, double l, double h)
+{
+	return -r(l) * b(z, l, h);
+}
+double a_l(double z, double l, double h)
+{
+	return -r(l) * a(z, l, h);
+}
+double a(double z, double l, double h)
+{
+	if (abs(z) <= 1e-5)
+		return 0;
+	else if (abs(z - l) <= 1e-5)
+		return 1;
+	else
+		return a(z, l - h, h) + h * a_l(z, l - h, h);
+}
+double b(double z, double l, double h)
+{
+	if (abs(z - l) <= 1e-5)
+		return r(l);
+	else
+		return b(z, l - h, h) + h * b_l(z , l - h, h);
+}
+
 vector<double> EilerMeth(double h)
 {
-	vector<double> y, u;
+	vector<double> y, u, s;
 	double delta = 0.1;
 	double x = 0;
-	y.push_back(c);
-	u.push_back(r(a, c, delta));
+	s.push_back(0);
 	while (x <= 1)
 	{
-		double tempY, tempU;
-		double Yn, Un;
-		Yn = y[y.size() - 1];
-		Un = u[u.size() - 1];
-		tempY = Yn + h * f(Un);
-		tempU = Un + h * g(Yn, 0, x);
+		double temps;
+		double Sn;
+		Sn = s[s.size() - 1];
+		temps = Sn + h * ds(Sn,1);
+		x += h;
+		s.push_back(temps);
+	}
+	x = 0;
+	a.push_back(0);
+	b.push_back(r(0));
+	while (x <= 1)
+	{
+		double tempA, tempB;
+		double An, Bn;
+		An = a[a.size() - 1];
+		Bn = b[b.size() - 1];
+		tempA = An + h * f(Un);
+		tempB = Un + h * g(x, Un, 1);
 		x += h;
 		y.push_back(tempY);
 		u.push_back(tempU);
