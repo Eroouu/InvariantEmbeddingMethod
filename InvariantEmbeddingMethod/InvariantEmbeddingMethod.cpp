@@ -108,10 +108,25 @@ double y(double z, double l, double h, vector<double> s)
 }
 int find_index_temp(double l, double h)
 {
-
+	int i = 0;
+	while (i < l / h + 1)
+	{
+		i++;
+	}
+	return i;
 }
-vector<vector<double>> vec_y(double l, double h) // l first ind, z is second
+int find_index_z(double x, double h)
 {
+	int i = 0;
+	while (i < x / h + 1)
+	{
+		i++;
+	}
+	return i;
+}
+vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is second
+{
+	vector<vector<double>> ans;
 	for (int i = 0; i < 1 / h + 1; i++)
 	{
 		vector<double> temp;
@@ -119,12 +134,14 @@ vector<vector<double>> vec_y(double l, double h) // l first ind, z is second
 		{
 			if (j == 0)
 				temp.push_back(0);
-			else if (j==i)
+			else if (j == i)
 				temp.push_back(0);
 			else
-				// erik daun
+				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s));
 		}
+		ans.push_back(temp);
 	}
+	return ans;
 }
 double u(double z, double l, double h, vector<double> s)
 {
@@ -147,30 +164,18 @@ double ErrorCount()
 	double x = 0;
 	double err = 0;
 	vector<double> s = vec_s(h);
+	vector<vector<double>> y = vec_y(h, s);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		if (abs(y(x, 1, h,s)-RightAns(x))>err)
+		if (abs(y[find_index_temp(1,h)][find_index_z(x,h)] - RightAns(x))>err)
 		{
-			err = abs(y(x, 1, h,s) - RightAns(x));
+			err = abs(y[find_index_temp(1, h)][find_index_z(x, h)] - RightAns(x));
 		}
-		cout << y(x, 1, h,s) << "  " << RightAns(x) << "  " << abs(y(x, 1, h,s) - RightAns(x)) << endl;
+		cout << y[find_index_temp(1, h)][find_index_z(x, h)] << "  " << RightAns(x) << "  " << abs(y[find_index_temp(1, h)][find_index_z(x, h)] - RightAns(x)) << endl;
 		x += h;
 	}
 	return err;
-}
-void Outcmd(vector<double> y, vector<double> u,double h)
-{
-	cout << "table of contents: x u y columns\n";
-	double tempX = 0;
-	for (int i = 0; i < y.size(); i++)
-	{
-		double  tempY, tempU;
-		tempY = y[i];
-		tempU = u[i];
-		cout << tempX << " " << tempU << " " << tempY << endl;
-		tempX += h;
-	}
 }
 int main()
 {
