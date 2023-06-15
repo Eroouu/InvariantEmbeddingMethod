@@ -34,8 +34,8 @@ double RightAns(double x)
 void Outcmd(vector<double> y, vector<double> u, double h);
 double b_l(double z, double l, double h);
 double a_l(double z, double l, double h);
-double u_l(double z, double l, double h);
-double y_l(double z, double l, double h);
+double u_l(double z, double l, double h, vector<double> s);
+double y_l(double z, double l, double h, vector<double> s);
 double ds(double l, double h);
 
 double a(double z, double l, double h)
@@ -88,43 +88,53 @@ vector<double> vec_s(double h)
 	}
 	return vec_s;
 }
-double y(double z, double l, double h)
+int find_index_s(double l, double h)
+{
+	int i = 0;
+	while (i < l / h + 1)
+	{
+		i++;
+	}
+	return i;
+}
+double y(double z, double l, double h, vector<double> s)
 {
 	if (abs(z) <= 1e-5)
 		return 0;
 	else if (abs(z - l) <= 1e-5)
 		return 0;
 	else
-		return y(z, l - h, h) + h * y_l(z, l - h, h);
+		return y(z, l - h, h,s) + h * y_l(z, l - h, h, s);
 }
-double u(double z, double l, double h)
+double u(double z, double l, double h, vector<double> s)
 {
 	if (abs(z - l) <= 1e-5)
-		return s(l,h);
+		return s[find_index_s(l, h)];
 	else
-		return u(z, l - h, h) + h * u_l(z, l - h, h);
+		return u(z, l - h, h,s) + h * u_l(z, l - h, h,s);
 }
-double u_l(double z, double l, double h)
+double u_l(double z, double l, double h, vector<double> s)
 {
-	return -s(l,h) * b(z, l, h);
+	return -s[find_index_s(l,h)] * b(z, l, h);
 }
-double y_l(double z, double l, double h)
+double y_l(double z, double l, double h, vector<double> s)
 {
-	return -s(l,h) * a(z, l, h);
+	return -s[find_index_s(l,h)] * a(z, l, h);
 }
 double ErrorCount()
 {
-	double h = 0.05;
+	double h = 0.04;
 	double x = 0;
 	double err = 0;
+	vector<double> s = vec_s(h);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		if (abs(y(x, 1, h)-RightAns(x))>err)
+		if (abs(y(x, 1, h,s)-RightAns(x))>err)
 		{
-			err = abs(y(x, 1, h) - RightAns(x));
+			err = abs(y(x, 1, h,s) - RightAns(x));
 		}
-		cout << y(x, 1, h) << "  " << RightAns(x) << "  " << abs(y(x, 1, h) - RightAns(x)) << endl;
+		cout << y(x, 1, h,s) << "  " << RightAns(x) << "  " << abs(y(x, 1, h,s) - RightAns(x)) << endl;
 		x += h;
 	}
 	return err;
