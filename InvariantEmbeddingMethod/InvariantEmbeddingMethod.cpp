@@ -88,7 +88,7 @@ vector<double> vec_s(double h)
 	}
 	return vec_s;
 }
-int find_index_s(double l, double h)
+int find_index(double l, double h)
 {
 	int i = 0;
 	while (i < l / h )
@@ -105,24 +105,6 @@ double y(double z, double l, double h, vector<double> s)
 		return 0;
 	else
 		return y(z, l - h, h,s) + h * y_l(z, l - h, h, s);
-}
-int find_index_temp(double l, double h)
-{
-	int i = 0;
-	while (i < l / h )
-	{
-		i++;
-	}
-	return i;
-}
-int find_index_z(double x, double h)
-{
-	int i = 0;
-	while (i < x / h )
-	{
-		i++;
-	}
-	return i;
 }
 vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is second
 {
@@ -146,17 +128,17 @@ vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is se
 double u(double z, double l, double h, vector<double> s)
 {
 	if (abs(z - l) <= 1e-5)
-		return s[find_index_s(l, h)];
+		return s[find_index(l, h)];
 	else
 		return u(z, l - h, h,s) + h * u_l(z, l - h, h,s);
 }
 double u_l(double z, double l, double h, vector<double> s)
 {
-	return -s[find_index_s(l,h)] * b(z, l, h);
+	return -s[find_index(l,h)] * b(z, l, h);
 }
 double y_l(double z, double l, double h, vector<double> s)
 {
-	return -s[find_index_s(l,h)] * a(z, l, h);
+	return -s[find_index(l,h)] * a(z, l, h);
 }
 double ErrorCount()
 {
@@ -168,11 +150,11 @@ double ErrorCount()
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		if (abs(y[find_index_temp(1,h)][find_index_z(x,h)] - RightAns(x))>err)
+		if (abs(y[find_index(1,h)][find_index(x,h)] - RightAns(x))>err)
 		{
-			err = abs(y[find_index_temp(1, h)][find_index_z(x, h)] - RightAns(x));
+			err = abs(y[find_index(1, h)][find_index(x, h)] - RightAns(x));
 		}
-		cout << y[find_index_temp(1, h)][find_index_z(x, h)] << "  " << RightAns(x) << "  " << abs(y[find_index_temp(1, h)][find_index_z(x, h)] - RightAns(x)) << endl;
+		cout << y[find_index(1, h)][find_index(x, h)] << "  " << RightAns(x) << "  " << abs(y[find_index(1, h)][find_index(x, h)] - RightAns(x)) << endl;
 		x += h;
 	}
 	return err;
