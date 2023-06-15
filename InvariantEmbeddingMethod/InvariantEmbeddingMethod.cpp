@@ -35,7 +35,7 @@ void Outcmd(vector<double> y, vector<double> u, double h);
 double b_l(double z, double l, double h);
 double a_l(double z, double l, double h);
 double u_l(double z, double l, double h, vector<double> s);
-double y_l(double z, double l, double h, vector<double> s);
+double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a);
 double ds(double l, double h);
 
 double a(double z, double l, double h)
@@ -46,6 +46,25 @@ double a(double z, double l, double h)
 		return 1;
 	else
 		return a(z, l - h, h) + h * a_l(z, l - h, h);
+}
+vector<vector<double>> vec_a(double h) // l is first, z is second
+{
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j < i + 1; j++)
+		{
+			if (j == 0)
+				temp.push_back(0);
+			else if (j == i)
+				temp.push_back(1);
+			else
+				temp.push_back(ans[i - 1][j] + h *(-r(i*h)*ans[i-1][j]));
+		}
+		ans.push_back(temp);
+	}
+	return ans;
 }
 double b(double z, double l, double h)
 {
@@ -97,16 +116,16 @@ int find_index(double l, double h)
 	}
 	return i;
 }
-double y(double z, double l, double h, vector<double> s)
+double y(double z, double l, double h, vector<double> s,vector<vector<double>> a)
 {
 	if (abs(z) <= 1e-5)
 		return 0;
 	else if (abs(z - l) <= 1e-5)
 		return 0;
 	else
-		return y(z, l - h, h,s) + h * y_l(z, l - h, h, s);
+		return y(z, l - h, h,s,a) + h * y_l(z, l - h, h, s,a);
 }
-vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is second
+vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a) // l first ind, z is second
 {
 	vector<vector<double>> ans;
 	for (int i = 0; i < 1 / h + 1; i++)
@@ -119,7 +138,7 @@ vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is se
 			else if (j == i)
 				temp.push_back(0);
 			else
-				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s));
+				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s,a));
 		}
 		ans.push_back(temp);
 	}
@@ -136,17 +155,18 @@ double u_l(double z, double l, double h, vector<double> s)
 {
 	return -s[find_index(l,h)] * b(z, l, h);
 }
-double y_l(double z, double l, double h, vector<double> s)
+double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a)
 {
-	return -s[find_index(l,h)] * a(z, l, h);
+	return -s[find_index(l,h)] * a[find_index(l,h)][find_index(z,h)];
 }
 double ErrorCount()
 {
-	double h = 0.04;
+	double h = 0.002;
 	double x = 0;
 	double err = 0;
 	vector<double> s = vec_s(h);
-	vector<vector<double>> y = vec_y(h, s);
+	vector < vector<double>> a = vec_a(h);
+	vector<vector<double>> y = vec_y(h, s,a);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
