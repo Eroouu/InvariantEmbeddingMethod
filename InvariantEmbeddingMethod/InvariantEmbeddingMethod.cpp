@@ -24,44 +24,20 @@ double r(double l)
 {
 	return (exp(2 * l) + 1) / (exp(2 * l) - 1);
 }
-double ds(double s_now, double l)
-{
-	return 1 - s_now - s_now * r(l);
-}
+
 double RightAns(double x)
 {
 	double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
 	return ans;
 }
-vector<double> EilerMeth(double h);
-double ErrorCount()
-{
-	double h = 0.01;
-	vector<double> y = EilerMeth(h);
-	double x = 0;
-	double err = 0;
-	cout << "Y   TrueY  currErr\n";
-	for (int i = 0; i < y.size(); i++) 
-	{
-		if (abs(y[i]-RightAns(x))>err)
-		{
-			err = abs(y[i] - RightAns(x));
-		}
-		cout << y[i] << "  " << RightAns(x) << "  " << abs(y[i] - RightAns(x)) << endl;
-		x += h;
-	}
-	return err;
-}
-void Outcmd(vector<double> y, vector<double> u, double h);
 
-double b_l(double z, double l, double h)
-{
-	return -r(l) * b(z, l, h);
-}
-double a_l(double z, double l, double h)
-{
-	return -r(l) * a(z, l, h);
-}
+void Outcmd(vector<double> y, vector<double> u, double h);
+double b_l(double z, double l, double h);
+double a_l(double z, double l, double h);
+double u_l(double z, double l, double h);
+double y_l(double z, double l, double h);
+double ds(double l, double h);
+
 double a(double z, double l, double h)
 {
 	if (abs(z) <= 1e-5)
@@ -78,39 +54,67 @@ double b(double z, double l, double h)
 	else
 		return b(z, l - h, h) + h * b_l(z , l - h, h);
 }
-
-vector<double> EilerMeth(double h)
+double b_l(double z, double l, double h)
 {
-	vector<double> y, u, s;
-	double delta = 0.1;
+	return -r(l) * b(z, l, h);
+}
+double a_l(double z, double l, double h)
+{
+	return -r(l) * a(z, l, h);
+}
+
+double s(double l, double h)
+{
+	if (abs(l) <= 1e-5)
+		return 0;
+	else
+		return s(l - h, h) + h * ds(l-h,h);
+}
+double ds(double l, double h)
+{
+	return 1 - s(l,h) - s(l,h) * r(l);
+}
+
+double y(double z, double l, double h)
+{
+	if (abs(z) <= 1e-5)
+		return 0;
+	else if (abs(z - l) <= 1e-5)
+		return 0;
+	else
+		return y(z, l - h, h) + h * y_l(z, l - h, h);
+}
+double u(double z, double l, double h)
+{
+	if (abs(z - l) <= 1e-5)
+		return s(l,h);
+	else
+		return u(z, l - h, h) + h * u_l(z, l - h, h);
+}
+double u_l(double z, double l, double h)
+{
+	return -s(l,h) * b(z, l, h);
+}
+double y_l(double z, double l, double h)
+{
+	return -s(l,h) * a(z, l, h);
+}
+double ErrorCount()
+{
+	double h = 0.05;
 	double x = 0;
-	s.push_back(0);
-	while (x <= 1)
+	double err = 0;
+	cout << "Y   TrueY  currErr\n";
+	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		double temps;
-		double Sn;
-		Sn = s[s.size() - 1];
-		temps = Sn + h * ds(Sn,1);
+		if (abs(y(x, 1, h)-RightAns(x))>err)
+		{
+			err = abs(y(x, 1, h) - RightAns(x));
+		}
+		cout << y(x, 1, h) << "  " << RightAns(x) << "  " << abs(y(x, 1, h) - RightAns(x)) << endl;
 		x += h;
-		s.push_back(temps);
 	}
-	x = 0;
-	a.push_back(0);
-	b.push_back(r(0));
-	while (x <= 1)
-	{
-		double tempA, tempB;
-		double An, Bn;
-		An = a[a.size() - 1];
-		Bn = b[b.size() - 1];
-		tempA = An + h * f(Un);
-		tempB = Un + h * g(x, Un, 1);
-		x += h;
-		y.push_back(tempY);
-		u.push_back(tempU);
-	}
-	//Outcmd(y, u, h);
-	return y;
+	return err;
 }
 void Outcmd(vector<double> y, vector<double> u,double h)
 {
