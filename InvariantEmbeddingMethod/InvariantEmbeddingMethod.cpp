@@ -22,7 +22,7 @@ namespace m751
 using namespace m751;
 double r(double a, double c,double delta)
 {
-	if (a == 0)
+	if (a >= 1)
 		return 0;
 	else
 		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
