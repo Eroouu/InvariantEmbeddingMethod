@@ -74,7 +74,20 @@ double ds(double l, double h)
 {
 	return 1 - s(l,h) - s(l,h) * r(l);
 }
-
+vector<double> vec_s(double h)
+{
+	vector<double> vec_s;
+	double l = 0;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		if (i==0)
+			vec_s.push_back(0);
+		else
+			vec_s.push_back(vec_s[i-1] + h*(1-vec_s[i-1]-vec_s[i-1]*r(l)));
+		l += h;
+	}
+	return vec_s;
+}
 double y(double z, double l, double h)
 {
 	if (abs(z) <= 1e-5)
