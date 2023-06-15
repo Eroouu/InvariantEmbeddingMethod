@@ -106,6 +106,26 @@ double y(double z, double l, double h, vector<double> s)
 	else
 		return y(z, l - h, h,s) + h * y_l(z, l - h, h, s);
 }
+int find_index_temp(double l, double h)
+{
+
+}
+vector<vector<double>> vec_y(double l, double h) // l first ind, z is second
+{
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j <i+1; j++)
+		{
+			if (j == 0)
+				temp.push_back(0);
+			else if (j==i)
+				temp.push_back(0);
+			else
+				// erik daun
+		}
+	}
+}
 double u(double z, double l, double h, vector<double> s)
 {
 	if (abs(z - l) <= 1e-5)
