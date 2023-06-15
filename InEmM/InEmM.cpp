@@ -131,8 +131,6 @@ double FF(double x)
 
 int main()
 {
-
-
     double p = Targetting_Method(2);
     double k0, k1, k2, k3;
     double n = 1000;
