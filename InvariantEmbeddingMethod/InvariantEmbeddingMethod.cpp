@@ -31,22 +31,10 @@ double RightAns(double x)
 	return ans;
 }
 
-void Outcmd(vector<double> y, vector<double> u, double h);
 double b_l(double z, double l, double h);
-double a_l(double z, double l, double h);
 double u_l(double z, double l, double h, vector<double> s);
 double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a);
-double ds(double l, double h);
 
-double a(double z, double l, double h)
-{
-	if (abs(z) <= 1e-5)
-		return 0;
-	else if (abs(z - l) <= 1e-5)
-		return 1;
-	else
-		return a(z, l - h, h) + h * a_l(z, l - h, h);
-}
 vector<vector<double>> vec_a(double h) // l is first, z is second
 {
 	vector<vector<double>> ans;
@@ -77,22 +65,6 @@ double b_l(double z, double l, double h)
 {
 	return -r(l) * b(z, l, h);
 }
-double a_l(double z, double l, double h)
-{
-	return -r(l) * a(z, l, h);
-}
-
-double s(double l, double h)
-{
-	if (abs(l) <= 1e-5)
-		return 0;
-	else
-		return s(l - h, h) + h * ds(l-h,h);
-}
-double ds(double l, double h)
-{
-	return 1 - s(l,h) - s(l,h) * r(l);
-}
 vector<double> vec_s(double h)
 {
 	vector<double> vec_s;
@@ -115,15 +87,6 @@ int find_index(double l, double h)
 		i++;
 	}
 	return i;
-}
-double y(double z, double l, double h, vector<double> s,vector<vector<double>> a)
-{
-	if (abs(z) <= 1e-5)
-		return 0;
-	else if (abs(z - l) <= 1e-5)
-		return 0;
-	else
-		return y(z, l - h, h,s,a) + h * y_l(z, l - h, h, s,a);
 }
 vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a) // l first ind, z is second
 {
