@@ -91,7 +91,7 @@ vector<double> vec_s(double h)
 int find_index_s(double l, double h)
 {
 	int i = 0;
-	while (i < l / h + 1)
+	while (i < l / h )
 	{
 		i++;
 	}
@@ -109,7 +109,7 @@ double y(double z, double l, double h, vector<double> s)
 int find_index_temp(double l, double h)
 {
 	int i = 0;
-	while (i < l / h + 1)
+	while (i < l / h )
 	{
 		i++;
 	}
@@ -118,7 +118,7 @@ int find_index_temp(double l, double h)
 int find_index_z(double x, double h)
 {
 	int i = 0;
-	while (i < x / h + 1)
+	while (i < x / h )
 	{
 		i++;
 	}
