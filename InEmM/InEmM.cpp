@@ -10,86 +10,21 @@ using namespace std;
 double q = 1.;
 double EI_x = 1.;
 double temp_l = 1.;
-double f(double z, double l)
-{
-    return (q * l * z / 2. - q * z * z / 2.) / EI_x;
-}
-double r(double l)
-{
-    return 1. / (l);
-}
 double F(double z, double l, double v)
 {
     return (q * l * z / 2. - q * z * z / 2.) / EI_x + v;
 
 }
-double b(double z, double l, double temp_z)
-{
-    double temp;
-    if (abs(z - l) < 1e-5)
-        temp = r(z);
-    else
-    {
-        temp = b(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
-    }
-    return temp;
-}
-double a(double z, double l, double temp_z)
-{
-    if (abs(z - l) < 1e-5 && abs(z) > 1e-5)
-        return 1;
-    else if (z == 0)
-        return 0;
-    else
-    {
 
-        return a(z, l - temp_z, temp_z) * (1 - r(l - temp_z) * temp_z);
-    }
-}
-
-double s(double l)
-{
-    if (abs(l) < 1e-5)
-        return 0.;
-    else if (l <= 0.1)
-        return l;
-    else
-        return 1. / l;
-}
-double u(double z, double l, double temp_z)
-{
-    double temp;
-    if (abs(z - l) < 1e-5)
-        temp = s(l);
-    else
-    {
-        temp = u(z, l - temp_z, temp_z) + (-s(l - temp_z) * b(z, l - temp_z, temp_z) * temp_z);
-    }
-    return temp;
-}
-double y(double z, double l, double temp_z)
-{
-    double temp;
-    if (abs(z - l) < 1e-5 && z != 0)
-        temp = 0;
-    else if (z == 0)
-        temp = 0;
-    else
-    {
-        temp = 0;
-        temp += y(z, l - temp_z, temp_z) + (-s(l - temp_z) * a(z, l - temp_z, temp_z) * temp_z);
-    }
-    return temp;
-}
 double RuK(double l, double p)
 {
     double n = 1e5;
     double k0, k1, k2, k3;
     double h = l / n;
-    double x0; double v0; double un; double vn; double u0;
+    double x0; double v0; double un; double u0;
     x0 = 0;
     un = u0 = 0;
-    vn = v0 = p;
+    v0 = p;
     k0 = v0 + h * F(x0, l, v0);
     for (int i = 0; i < n; i++)
     {
@@ -101,7 +36,7 @@ double RuK(double l, double p)
         k2 = v0 + h * F(x0 + h / 2., l, v0 + h * k0 / 2.);
         k3 = v0 + h * F(x0 + h, l, v0 + h * k2);
         un = u0 + (h / 6.) * (k0 + 2. * k1 + 2. * k2 + k3);
-        vn = k0;
+        
     }
 
     return un;
@@ -113,7 +48,6 @@ double Targetting_Method(double l)
     double p;
     while (abs(RuK(l, p1)) > 1e-10)
     {
-        cout << RuK(l, p1) << " " << p1<< endl;
         p = (p2 + p1) / 2.;
         if (RuK(l, p1) * RuK(l, p) < 0)
             p2 = p;
@@ -131,21 +65,24 @@ double FF(double x)
 
 int main()
 {
+    int k;
     double p = Targetting_Method(1.);
     double k0, k1, k2, k3;
     double n = 1e4;
     double h = 1 / n;
-    double x0, v0, un, vn, u0;
+    double x0, v0, un, u0;
     x0 = 0;
     un = u0 = 0;
-    vn = v0 = p;
+    v0 = p;
     k0 = v0 + h * F(x0, 1., v0);
     double m = 0;
     for (int i = 0; i <= n; i++)
     {
-        cout << i * h << ' ' << un << ' ' << abs(un - FF(i * h)) << endl;
-        if (m < abs(un - FF(i * h)))
+       // cout << i * h << ' ' << un << ' ' << abs(un - FF(i * h)) << endl;
+        if (m < abs(un - FF(i * h))) {
             m = abs(un - FF(i * h));
+            k = i;
+        }
         x0 = i * h;
         u0 = un;
         v0 = k0;
@@ -156,7 +93,8 @@ int main()
         un = u0 + (h / 6.) * (k0 + .2 * k1 + 2. * k2 + k3);
     }
 
-    cout << m;
+    cout << "Max error is: " << m << " X is: " << k * h << endl;
+    cout << "Parameter is: " << p << endl;
     return 0;
 }
 
