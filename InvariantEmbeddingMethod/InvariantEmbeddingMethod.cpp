@@ -58,10 +58,7 @@ double b_l(double z, double l, double h)
 {
 	return -r(l) * b(z, l, h);
 }
-double a_l(double z, double l, double h)
-{
-	return -r(l) * a(z, l, h);
-}
+
 
 double s(double l, double h)
 {
@@ -97,15 +94,7 @@ int find_index_s(double l, double h)
 	}
 	return i;
 }
-double y(double z, double l, double h, vector<double> s)
-{
-	if (abs(z) <= 1e-5)
-		return 0;
-	else if (abs(z - l) <= 1e-5)
-		return 0;
-	else
-		return y(z, l - h, h,s) + h * y_l(z, l - h, h, s);
-}
+
 int find_index_temp(double l, double h)
 {
 	int i = 0;
@@ -124,20 +113,39 @@ int find_index_z(double x, double h)
 	}
 	return i;
 }
-vector<vector<double>> vec_y(double h, vector<double> s) // l first ind, z is second
+vector<vector<double>> vec_a(double h) // l first ind, z is second
 {
 	vector<vector<double>> ans;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
 	{
 		vector<double> temp;
-		for (int j = 0; j <i+1; j++)
+		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
+		{
+			if (j == 0)
+				temp.push_back(0);
+			else if (j == i)
+				temp.push_back(1);
+			else
+				temp.push_back(ans[i - 1][j] - h * r(h * i) * ans[i - 1][j]);
+		}
+		ans.push_back(temp);
+	}
+	return ans;
+}
+vector<vector<double>> vec_y(double h, vector<double> s, vector<vector<double>> a) // l first ind, z is second
+{
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
+	{
+		vector<double> temp;
+		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
 		{
 			if (j == 0)
 				temp.push_back(0);
 			else if (j == i)
 				temp.push_back(0);
 			else
-				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s));
+				temp.push_back( ans[i-1][j] - h * s[i] * a[i-1][j] );
 		}
 		ans.push_back(temp);
 	}
@@ -154,17 +162,15 @@ double u_l(double z, double l, double h, vector<double> s)
 {
 	return -s[find_index_s(l,h)] * b(z, l, h);
 }
-double y_l(double z, double l, double h, vector<double> s)
-{
-	return -s[find_index_s(l,h)] * a(z, l, h);
-}
+
 double ErrorCount()
 {
 	double h = 0.04;
 	double x = 0;
 	double err = 0;
 	vector<double> s = vec_s(h);
-	vector<vector<double>> y = vec_y(h, s);
+	vector<vector<double>> a = vec_a(h);
+	vector<vector<double>> y = vec_y(h, s, a);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
