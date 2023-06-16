@@ -7,8 +7,8 @@
 #include <iomanip>
 using namespace std;
 
-double q = 1.;
-double EI_x = 1.;
+double q = 800.;
+double EI_x = 2.;
 double temp_l = 1.;
 double F(double z, double l, double v)
 {
@@ -21,10 +21,10 @@ double RuK(double l, double p)
     double n = 1e5;
     double k0, k1, k2, k3;
     double h = l / n;
-    double x0; double v0; double un; double u0;
+    double x0; double v0; double un; double u0; double vn;
     x0 = 0;
     un = u0 = 0;
-    v0 = p;
+    vn = v0 = p;
     k0 = v0 + h * F(x0, l, v0);
     for (int i = 0; i < n; i++)
     {
@@ -36,18 +36,19 @@ double RuK(double l, double p)
         k2 = v0 + h * F(x0 + h / 2., l, v0 + h * k0 / 2.);
         k3 = v0 + h * F(x0 + h, l, v0 + h * k2);
         un = u0 + (h / 6.) * (k0 + 2. * k1 + 2. * k2 + k3);
-        
+        vn = k0;
     }
 
-    return un;
+    return un + vn;
 }
 
 double Targetting_Method(double l)
 {
-    double p1 = 0, p2 = -10;
+    double p1 = 200, p2 = -100;
     double p;
     while (abs(RuK(l, p1)) > 1e-10)
     {
+        cout << RuK(l, p1) << " " << p1 << endl;
         p = (p2 + p1) / 2.;
         if (RuK(l, p1) * RuK(l, p) < 0)
             p2 = p;
@@ -60,7 +61,7 @@ double Targetting_Method(double l)
 
 double FF(double x)
 {
-    return -pow(x, 4) / 24 + pow(x, 3) / 12 - x / 24;
+    return -200 * x*x + 200*x;
 }
 
 int main()
