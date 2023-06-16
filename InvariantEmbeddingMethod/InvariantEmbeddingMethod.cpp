@@ -65,25 +65,7 @@ double b_l(double z, double l, double h)
 {
 	return -r(l) * b(z, l, h);
 }
-double a_l(double z, double l, double h)
-{
-	return -r(l) * a(z, l, h);
-}
 
-double s(double l, double h)
-{
-	if (abs(l) <= 1e-5)
-		return 0;
-	else
-		return s(l - h, h) + h * ds(l-h,h);
-}
-double ds(double l, double h)
-{
-	return 1 - s(l,h) - s(l,h) * r(l);
-}
-{
-	return 1 - s(l,h) - s(l,h) * r(l);
-}
 vector<double> vec_s(double h)
 {
 	vector<double> vec_s;
@@ -93,7 +75,14 @@ vector<double> vec_s(double h)
 		if (i==0)
 			vec_s.push_back(0);
 		else
-			vec_s.push_back(vec_s[i-1] + h*(1-vec_s[i-1]-vec_s[i-1]*r(l)));
+		{
+			double k1, k2, k3, k4;
+			k1 = 1 - vec_s[i - 1] * (1 - r(l));
+			k2 = 1 - (vec_s[i - 1] + h/2 * k1) * (1 - r(l + h/2));
+			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 - r(l + h / 2));
+			k4 = 1 - (vec_s[i - 1] + h  * k3) * (1 - r(l + h));
+			vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
+		}	
 		l += h;
 	}
 	return vec_s;
@@ -101,7 +90,7 @@ vector<double> vec_s(double h)
 int find_index(double l, double h)
 {
 	int i = 0;
-	while (i < l / h )
+	while (abs(i - l / h) > 1e-5 )
 	{
 		i++;
 	}
@@ -143,20 +132,21 @@ double y_l(double z, double l, double h, vector<double> s, vector<vector<double>
 }
 double ErrorCount()
 {
-	double h = 0.002;
+	double h = 0.05;
 	double x = 0;
 	double err = 0;
 	vector<double> s = vec_s(h);
 	vector < vector<double>> a = vec_a(h);
-	vector<vector<double>> y = vec_y(h, s,a);
+	vector<  vector<double>> y = vec_y(h, s, a);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		if (abs(y[find_index(1,h)][find_index(x,h)] - RightAns(x))>err)
+		double temp_otv = y[y.size() - 1][find_index(x, h)];
+		if (abs(temp_otv - RightAns(x))>err)
 		{
-			err = abs(y[find_index(1, h)][find_index(x, h)] - RightAns(x));
+			err = abs(temp_otv - RightAns(x));
 		}
-		cout << y[find_index(1, h)][find_index(x, h)] << "  " << RightAns(x) << "  " << abs(y[find_index(1, h)][find_index(x, h)] - RightAns(x)) << endl;
+		cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
 		x += h;
 	}
 	return err;
