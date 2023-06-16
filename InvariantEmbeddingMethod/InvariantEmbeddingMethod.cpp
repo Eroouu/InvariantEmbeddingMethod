@@ -81,8 +81,8 @@ vector<double> vec_s(double h)
 			k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h/2));
 			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h/2));
 			k4 = 1 - (vec_s[i - 1] + h  * k3) * (1 + r(l + h));
-			vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
-			//vec_s.push_back(vec_s[i - 1] + h * k1);
+			//vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
+			vec_s.push_back(vec_s[i - 1] + h * k1);
 		}	
 		l += h;
 	}
@@ -139,18 +139,35 @@ double y_l(double z, double l, double h, vector<double> s, vector<vector<double>
 {
 	return -s[find_index(l,h)] * a[find_index(l,h)][find_index(z,h)];
 }
-double ErrorCount()
+void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 {
-	double h = 0.002;
+	cout << "y1         y2\n";
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		cout << y1[y1.size() - 1][i] << "   " << y2[y2.size() - 1][2 * i] << endl;
+	}
+	cout << endl;
+}
+double ErrorCount(double h)
+{
 	double x = 0;
 	double err = 0;
-	vector<double> s = vec_s(h);
-	vector < vector<double>> a = vec_a(h);
-	vector<  vector<double>> y = vec_y(h, s, a);
+	vector<double> s1 = vec_s(h);
+	vector<double> s2 = vec_s(h/2);
+	vector < vector<double>> a1 = vec_a(h);
+	vector < vector<double>> a2 = vec_a(h/2);
+	vector<vector<double>> y1 = vec_y(h, s1, a1);
+	vector<vector<double>> y2 = vec_y(h/2, s2, a2);
+	vector<double> y;
+	for (int i = 0; i < y1.size(); i++)
+	{
+		y.push_back(2 * y1[y1.size() - 1][i] - y2[y2.size() - 1][2 * i]);
+	}
+	//tempOutput(y1, y2, h);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		double temp_otv = y[y.size() - 1][find_index(x, h)];
+		double temp_otv = y[find_index(x, h)];
 		if (abs(temp_otv - RightAns(x))>err)
 		{
 			err = abs(temp_otv - RightAns(x));
@@ -163,8 +180,9 @@ double ErrorCount()
 int main()
 {
 	//EilerMeth(0.01);
-	double err =ErrorCount();
-	cout << "Error is: " << err;
+	double h = 0.05;
+	double err =ErrorCount(h);
+	cout << "Error is: " << err <<" h is: "<< h ;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
