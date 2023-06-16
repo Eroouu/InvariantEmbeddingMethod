@@ -77,11 +77,12 @@ vector<double> vec_s(double h)
 		else
 		{
 			double k1, k2, k3, k4;
-			k1 = 1 - vec_s[i - 1] * (1 - r(l));
-			k2 = 1 - (vec_s[i - 1] + h/2 * k1) * (1 - r(l + h/2));
-			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 - r(l + h / 2));
-			k4 = 1 - (vec_s[i - 1] + h  * k3) * (1 - r(l + h));
+			k1 = 1 - vec_s[i - 1] * (1 + r(l));
+			k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h/2));
+			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h/2));
+			k4 = 1 - (vec_s[i - 1] + h  * k3) * (1 + r(l + h));
 			vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
+			//vec_s.push_back(vec_s[i - 1] + h * k1);
 		}	
 		l += h;
 	}
@@ -109,7 +110,15 @@ vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a
 			else if (j == i)
 				temp.push_back(0);
 			else
+			{
+				/*double k1, k2, k3, k4;
+				k1 = y_l(j * h, (i - 1) * h, h, s, a);
+				k2 = y_l(j * h, (i - 1) * h, h, s, a);
+				k3 = y_l(j * h, (i - 1) * h, h, s, a);
+				k4 = y_l(j * h, (i - 1) * h, h, s, a);*/
 				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s,a));
+			}
+				
 		}
 		ans.push_back(temp);
 	}
@@ -132,7 +141,7 @@ double y_l(double z, double l, double h, vector<double> s, vector<vector<double>
 }
 double ErrorCount()
 {
-	double h = 0.05;
+	double h = 0.002;
 	double x = 0;
 	double err = 0;
 	vector<double> s = vec_s(h);
