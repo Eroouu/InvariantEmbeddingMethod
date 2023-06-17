@@ -38,13 +38,23 @@ vector<vector<double>> vec_r(double h) // Inverted array of all a_i of (array of
 	}
 	return ans;
 }
+vector<vector<double>> c_dj(vector<vector<double>> r_c,double h)
+{
+
+}
 int find_index(double x,double delta)
 {
-	
+	int i = 0;
+	while (abs(i - x / delta) > 1e-5)
+	{
+		i++;
+	}
+	return i;
 }
 double r(double a, double c,double delta, vector<vector<double>> r_c)
 {
-	return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
+	int i = find_index(a, delta), j = find_index(c, delta);
+	return r(a + delta, c + r_c[i+1][j] * delta, delta,r_c) - delta * g(c, 0, a);
 }
 double RightAns(double x)
 {
