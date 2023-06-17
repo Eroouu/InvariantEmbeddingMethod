@@ -38,6 +38,10 @@ vector<vector<double>> vec_r(double h) // Inverted array of all a_i of (array of
 	}
 	return ans;
 }
+int find_index(double x,double delta)
+{
+	
+}
 double r(double a, double c,double delta, vector<vector<double>> r_c)
 {
 	return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
