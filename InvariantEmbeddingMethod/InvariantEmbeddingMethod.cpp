@@ -20,12 +20,27 @@ namespace m751
 	double a = 0, c = 0;
 }
 using namespace m751;
-double r(double a, double c,double delta)
+
+vector<vector<double>> vec_r(double h) // Inverted array of all a_i of (array of elements where we find one r(a+h,c_j) for all c_j)
 {
-	if (a >= 1)
-		return 0;
-	else
-		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
+	vector<vector<double>> ans;
+	double a = 1, c = 1;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j < 1 / h + 1; j++)
+		{
+			temp.push_back(c + h * g(c, 0, a));
+			c -= h;
+		}
+		ans.push_back(temp);
+		a -= h;
+	}
+	return ans;
+}
+double r(double a, double c,double delta, vector<vector<double>> r_c)
+{
+	return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
 }
 double RightAns(double x)
 {
