@@ -5,6 +5,7 @@
 #include <vector>
 #include <math.h>
 #include <iomanip>
+#include "BuildingEq.h"
 using namespace std;
 namespace functions1
 {
@@ -275,6 +276,42 @@ void Targetting_Method( double l)
     } while ( abs(tau_2 - tau_1) > 1e-6);
     cout << tau_2 << " " <<  RK(tau_2, l) << endl;
 }
+double RightAns(double x)
+{
+    double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
+    return ans;
+}
+void Class_test(double h)
+{
+    BuildingEq sol1;
+    sol1.set_s(h);
+    sol1.set_a(h);
+    sol1.set_y(h);
+    vector<vector<double>> y1 = sol1.get_y();
+    BuildingEq sol2;
+    sol2.set_s(h/2);
+    sol2.set_a(h/2);
+    sol2.set_y(h/2);
+    vector<vector<double>> y2 = sol2.get_y();
+    vector<double> y;
+    for (int i = 0; i < y1.size(); i++)
+    {
+        y.push_back(2 * y1[y1.size() - 1][i] - y2[y2.size() - 1][2 * i]);
+    }
+    double err = 0,x=0;
+    cout << "Y   TrueY  currErr\n";
+    for (int i = 0; i < 1 / h + 1; i++)
+    {
+        double temp_otv = y[i];
+        if (abs(temp_otv - RightAns(x)) > err)
+        {
+            err = abs(temp_otv - RightAns(x));
+        }
+        cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
+        x += h;
+    }
+    cout << "Error is: " << err << " h is: " << h;
+}
 int main()
 {
     /*vector<double> vect_a, vect_b, vect_y, vect_u;
@@ -294,8 +331,9 @@ int main()
     PrintVector(vect_a);
     cout << y(0.1, 1, 0.1) <<  endl;
     cout << " ///////////////////" << endl;*/
-    Targetting_Method(1);
-
+    //Targetting_Method(1);
+    double h = 0.05;
+    Class_test(h);
     return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

@@ -1,7 +1,13 @@
 #include "BuildingEq.h"
 BuildingEq::BuildingEq()
 {
-
+	p = 1.;
+	q = -1.;
+}
+BuildingEq::BuildingEq(double tempP, double tempQ)
+{
+	p = tempP;
+	q = tempQ;
 }
 void BuildingEq::set_s(double h)
 {
@@ -27,6 +33,10 @@ double BuildingEq::r(double l)
 {
 	double k = -q;
 	return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
+}
+vector<vector<double>> BuildingEq::get_y()
+{
+	return vec_y;
 }
 void BuildingEq::set_a(double h) // l is first, z is second
 {
