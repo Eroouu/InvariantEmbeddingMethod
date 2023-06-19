@@ -281,14 +281,19 @@ double RightAns(double x)
     double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
     return ans;
 }
+double RightAns2(double x)
+{
+    double ans = (1-exp(-2*x))/(2*(exp(-2)-1))+x/2;
+    return ans;
+}
 void Class_test(double h)
 {
-    BuildingEq sol1;
+    BuildingEq sol1(1.,-2.);
     sol1.set_s(h);
     sol1.set_a(h);
     sol1.set_y(h);
     vector<vector<double>> y1 = sol1.get_y();
-    BuildingEq sol2;
+    BuildingEq sol2(1.,-2.);
     sol2.set_s(h/2);
     sol2.set_a(h/2);
     sol2.set_y(h/2);
@@ -303,11 +308,11 @@ void Class_test(double h)
     for (int i = 0; i < 1 / h + 1; i++)
     {
         double temp_otv = y[i];
-        if (abs(temp_otv - RightAns(x)) > err)
+        if (abs(temp_otv - RightAns2(x)) > err)
         {
-            err = abs(temp_otv - RightAns(x));
+            err = abs(temp_otv - RightAns2(x));
         }
-        cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
+        cout << temp_otv << "  " << RightAns2(x) << "  " << abs(temp_otv - RightAns2(x)) << endl;
         x += h;
     }
     cout << "Error is: " << err << " h is: " << h;
