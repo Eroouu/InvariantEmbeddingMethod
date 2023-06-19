@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuildingEq.cpp" />
     <ClCompile Include="InvariantEmbeddingMethod.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BuildingEq.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
