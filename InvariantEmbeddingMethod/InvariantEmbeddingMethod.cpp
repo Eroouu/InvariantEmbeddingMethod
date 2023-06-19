@@ -6,23 +6,30 @@
 #include <iomanip>
 #include <vector>
 #include <tuple>
+#include <math.h>
 using namespace std;
+
 namespace m752
 {
+	const double p = 1.;
+	const double q = -1.;
+
 	double f(double u)
 	{
 		return u;
 	}
 	double g(double x,double u, double l) // возможен 3й аргумент
 	{
-		return 1 - u;
+		return p - q * u;
 	}
 
 }
+
 using namespace m752;
 double r(double l)
 {
-	return (exp(2 * l) + 1) / (exp(2 * l) - 1);
+	double k = -q;
+	return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
 }
 
 double RightAns(double x)
