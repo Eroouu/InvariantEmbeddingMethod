@@ -1,15 +1,21 @@
 #include "BuildingEq.h"
 BuildingEq::BuildingEq()
 {
-	p = 1.;
-	q = -1.;
+	q_con = 1.;
+	EI_x = 1.;
+	q = 0;
 	h = 0.05;
 }
-BuildingEq::BuildingEq(double tempP, double tempQ, double tempH)
+BuildingEq::BuildingEq(double tempQcon, double tempEIx, double tempQ, double tempH)
 {
-	p = tempP;
+	q_con = tempQcon;
+	EI_x = tempEIx;
 	q = tempQ;
 	h = tempH;
+}
+double BuildingEq::p(double x, double l)
+{
+	return 1./(EI_x) * (q_con * x * l / 2 - q_con * x * x / 2);
 }
 void BuildingEq::set_s()
 {
@@ -20,11 +26,11 @@ void BuildingEq::set_s()
 			vec_s.push_back(0);
 		else
 		{
-			double k1, k2, k3, k4;
-			k1 = 1 - vec_s[i - 1] * (1 + r(l));
-			k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h / 2));
-			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h / 2));
-			k4 = 1 - (vec_s[i - 1] + h * k3) * (1 + r(l + h));
+			double k1;// , k2, k3, k4;
+			k1 = p(h*i, 1) - vec_s[i - 1] * (q + r(l));
+			//k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h / 2));
+			//k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h / 2));
+			//k4 = 1 - (vec_s[i - 1] + h * k3) * (1 + r(l + h));
 			//vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
 			vec_s.push_back(vec_s[i - 1] + h * k1);
 		}
@@ -34,15 +40,18 @@ void BuildingEq::set_s()
 double BuildingEq::r(double l)
 {
 	double k = -q;
-	return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
+	//return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
+	return 1. / l;
 }
+
 vector<vector<double>> BuildingEq::get_y()
 {
 	return vec_y;
 }
 double BuildingEq::TrueY(double x)
 {
-	double ans = 1. / (-q) * ((1 - exp(q * x / p)) / (exp(q / p) - 1) + x);
+	//double ans = 1. / (-q) * ((1 - exp(q * x / p(x, 1))) / (exp(q / p(x,1)) - 1) + x);
+	double ans = -(1. / 24) * q_con * x * x * x * x / EI_x + (1. / 12) * q_con * x * x * x / EI_x - (1. / 24) * q_con * x / EI_x;
 	return ans;
 }
 void BuildingEq::set_a() // l is first, z is second

@@ -277,14 +277,14 @@ void Targetting_Method( double l)
     cout << tau_2 << " " <<  RK(tau_2, l) << endl;
 }
 
-void Class_test(double p,double q,double h)
+void Class_test(double q_con, double EI_x, double q,double h)
 {
-    BuildingEq sol1(p,q,h);
+    BuildingEq sol1(q_con, EI_x, q, h);
     sol1.set_s();
     sol1.set_a();
     sol1.set_y();
     vector<vector<double>> y1 = sol1.get_y();
-    BuildingEq sol2(p,q,h/2);
+    BuildingEq sol2(q_con, EI_x, q, h/2);
     sol2.set_s();
     sol2.set_a();
     sol2.set_y();
@@ -329,9 +329,7 @@ int main()
     cout << " ///////////////////" << endl;*/
     //Targetting_Method(1);
     double h = 0.005;
-    double p = 1;
-    double q = -1;
-    Class_test(p,q,h);
+    Class_test(1., 1., 0 ,h);
     return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
