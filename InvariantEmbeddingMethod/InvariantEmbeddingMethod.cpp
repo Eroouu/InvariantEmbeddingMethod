@@ -84,10 +84,10 @@ void Outcmd(vector<double> y, vector<double> u, double h);
 vector<double> EilerMeth(double h)
 {
 	vector<double> y, u;
-	double delta = 0.1;
 	double x = 0;
 	y.push_back(c);
-	u.push_back(r(a, c, delta));
+	vector<vector<double>> r_c = vec_r(h);
+	u.push_back(r(a, c, h,r_c));
 	while (x <= 1)
 	{
 		double tempY, tempU;
