@@ -5,59 +5,72 @@ BuildingEq::BuildingEq()
 	EI_x = 1.;
 	q = 0;
 	h = 0.05;
+	l = 1;
 }
-BuildingEq::BuildingEq(double tempQcon, double tempEIx, double tempQ, double tempH)
+BuildingEq::BuildingEq(double tempQcon, double tempEIx, double tempQ,double tempL, double tempH)
 {
 	q_con = tempQcon;
 	EI_x = tempEIx;
 	q = tempQ;
 	h = tempH;
+	l = tempL;
 }
-double BuildingEq::p(double x, double l)
+double BuildingEq::p(double x)
 {
 	return 1./(EI_x) * (q_con * x * l / 2 - q_con * x * x / 2);
 }
 void BuildingEq::set_s()
 {
-	double l = 0;
-	for (int i = 0; i < 1 / h + 1; i++)
+	double x = 0;
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		if (i == 0)
 			vec_s.push_back(0);
 		else
 		{
 			double k1;// , k2, k3, k4;
-			k1 = p(h*i, 1) - vec_s[i - 1] * (q + r(l));
+			k1 = p(h*i) - vec_s[i - 1] * (q + r(x));
 			//k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h / 2));
 			//k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h / 2));
 			//k4 = 1 - (vec_s[i - 1] + h * k3) * (1 + r(l + h));
 			//vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
 			vec_s.push_back(vec_s[i - 1] + h * k1);
 		}
-		l += h;
+		x += h;
 	}
 }
-double BuildingEq::r(double l)
+double BuildingEq::r(double x)
 {
 	double k = -q;
 	//return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
-	return 1. / l;
+	return 1. / x;
 }
 
 vector<vector<double>> BuildingEq::get_y()
 {
 	return vec_y;
 }
+vector<double> BuildingEq::get_ans()
+{
+	vector<double> ans;
+	vector<vector<double>> y = this->get_y();
+	for (int i = 0; i < y.size(); i++)
+	{
+		ans.push_back(y[y.size() - 1][i]);
+	}
+	return ans;
+}
 double BuildingEq::TrueY(double x)
 {
 	//double ans = 1. / (-q) * ((1 - exp(q * x / p(x, 1))) / (exp(q / p(x,1)) - 1) + x);
-	double ans = -(1. / 24) * q_con * x * x * x * x / EI_x + (1. / 12) * q_con * x * x * x / EI_x - (1. / 24) * q_con * x / EI_x;
+	//double ans = -(1. / 24) * q_con * x * x * x * x / EI_x + l*(1. / 12) * q_con * x * x * x / EI_x - (1. / 24)*l*l*l* q_con * x / EI_x;
+	double ans = -(1. / 24) * q_con * (x * x * x * x - 2 * l * x * x * x + l * l * l * x) / EI_x;
 	return ans;
 }
 void BuildingEq::set_a() // l is first, z is second
 {
 	
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		vector<double> temp;
 		for (int j = 0; j < i + 1; j++)
@@ -75,7 +88,7 @@ void BuildingEq::set_a() // l is first, z is second
 
 void BuildingEq::set_y()
 {
-	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
+	for (int i = 0; i < l / h + 1; i++) // для определенного значения l 
 	{
 		vector<double> temp;
 		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
@@ -86,11 +99,6 @@ void BuildingEq::set_y()
 				temp.push_back(0);
 			else
 			{
-				/*double k1, k2, k3, k4;
-				k1 = y_l(j * h, (i - 1) * h, h, s, a);
-				k2 = y_l(j * h, (i - 1) * h, h, s, a);
-				k3 = y_l(j * h, (i - 1) * h, h, s, a);
-				k4 = y_l(j * h, (i - 1) * h, h, s, a);*/
 				temp.push_back(vec_y[i - 1][j] - h * vec_s[this->find_index((i-1)*h,h)]*vec_a[this->find_index((i - 1) * h, h)][this->find_index(j*h,h)]); // y_l removed
 			}
 		}
@@ -105,10 +113,10 @@ void BuildingEq::set_all()
 	this->set_y();
 }
 
-int BuildingEq::find_index(double l, double h)
+int BuildingEq::find_index(double x, double h)
 {
 	int i = 0;
-	while (abs(i - l / h) > 1e-5)
+	while (abs(i - x / h) > 1e-5)
 	{
 		i++;
 	}

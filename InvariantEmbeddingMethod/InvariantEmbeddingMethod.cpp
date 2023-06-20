@@ -6,27 +6,36 @@
 #include <math.h>
 #include <iomanip>
 #include "BuildingEq.h"
+#include <ctime>
 using namespace std;
 
-void PrintVector(vector<double> V)
+void ClassicMethod(double q_con, double EI_x, double q,double l, double h)
 {
-    cout << fixed << std::setprecision(5);
-    cout << "-------------------------------------------------------------" << endl;
-    for (int i = 0; i < V.size(); i++)
+    BuildingEq sol1(q_con, EI_x, q,l, h);
+    sol1.set_all();
+    vector<double> y = sol1.get_ans();
+    double err = 0, x = 0;
+    cout << "Y   TrueY  currErr\n";
+    for (int i = 0; i < l / h + 1; i++)
     {
-        cout << setw(7) << V[i] << "  " << endl;
+        double temp_otv = y[i];
+        if (abs(temp_otv - sol1.TrueY(x)) > err)
+        {
+            err = abs(temp_otv - sol1.TrueY(x));
+        }
+        cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
+        x += h;
     }
-    cout << "-------------------------------------------------------------" << endl;
+    cout << "Error is: " << err << " h is: " << h<< endl;
 }
-
-void Class_test(double q_con, double EI_x, double q,double h)
+void RungeMethod(double q_con, double EI_x, double q,double l, double h)
 {
-    BuildingEq sol1(q_con, EI_x, q, h);
+    BuildingEq sol1(q_con, EI_x, q,l, h);
     sol1.set_s();
     sol1.set_a();
     sol1.set_y();
     vector<vector<double>> y1 = sol1.get_y();
-    BuildingEq sol2(q_con, EI_x, q, h/2);
+    BuildingEq sol2(q_con, EI_x, q, l, h/2);
     sol2.set_s();
     sol2.set_a();
     sol2.set_y();
@@ -48,12 +57,17 @@ void Class_test(double q_con, double EI_x, double q,double h)
         cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
         x += h;
     }
-    cout << "Error is: " << err << " h is: " << h;
+    cout << "Error is: " << err << " h is: " << h<< endl;
 }
 int main()
 {
-    double h = 0.002;
-    Class_test(1., 1., 0 ,h);
+    double h = 0.1;
+    double l = 100.;
+    double q_con = 0.01;
+    double EI_x = 10000.;
+    ClassicMethod(q_con, EI_x, 0, l,h);
+    //RungeMethod(1., 1., 0 ,l,h);
+    cout << "runtime = " << clock() / 1000.0 << endl;
     return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
