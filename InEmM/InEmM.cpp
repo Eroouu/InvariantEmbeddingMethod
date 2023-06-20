@@ -5,9 +5,10 @@
 #include <vector>
 #include <math.h>
 #include <iomanip>
+#include <ctime>
 using namespace std;
 
-double q = 2.;
+double q = 1.;
 double EI_x = 1.;
 double temp_l = 1.;
 double F(double z, double l, double v)
@@ -69,7 +70,7 @@ int main()
     double p = Targetting_Method(1.);
     double k0, k1, k2, k3;
     double n = 1e3;
-    double h = 0.001;
+    double h = 1e-3;
     double x0, v0, un, u0, vn, l = 1., m = 0, ind_max_razn = 0;
     x0 = 0;
     un = u0 = 0;
@@ -88,7 +89,7 @@ int main()
             m = abs(un - True_Answer(i * h));
             ind_max_razn = i;
         }
-        cout << x0 << " " << u0 << " " << abs(un - True_Answer(i * h)) <<  endl;
+        //cout << x0 << " " << u0 << " " << abs(un - True_Answer(i * h)) <<  endl;
         u0 = un;
         v0 = vn;
         
@@ -96,6 +97,7 @@ int main()
 
     cout << "Max error is: " << m << " X is: " << ind_max_razn * h << endl;
     cout << "Parameter is: " << p << "; h is " << h << endl;
+    cout << "runtime = " << clock() / 1000.0 << endl;
     return 0;
 }
 
