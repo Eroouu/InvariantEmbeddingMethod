@@ -7,8 +7,8 @@
 #include <iomanip>
 using namespace std;
 
-double q = 800.;
-double EI_x = 2.;
+double q = 2.;
+double EI_x = 1.;
 double temp_l = 1.;
 double F(double z, double l, double v)
 {
@@ -17,7 +17,7 @@ double F(double z, double l, double v)
 
 double True_Answer(double x)
 {
-    return (-50 / 3) * (x*x*x*x - 2 * x*x*x + x);
+    return -(1. / 24) * q * x * x * x * x / EI_x + (1. / 12) * q * x * x * x / EI_x - (1. / 24) * q * x / EI_x;;
 }
 
 double RuK(double l, double p)
@@ -68,8 +68,8 @@ int main()
     int k;
     double p = Targetting_Method(1.);
     double k0, k1, k2, k3;
-    double n = 1e4;
-    double h = 1 / n;
+    double n = 1e3;
+    double h = 0.001;
     double x0, v0, un, u0, vn, l = 1., m = 0, ind_max_razn = 0;
     x0 = 0;
     un = u0 = 0;
@@ -88,14 +88,14 @@ int main()
             m = abs(un - True_Answer(i * h));
             ind_max_razn = i;
         }
-        cout << x0 << " " << u0 << endl;
+        cout << x0 << " " << u0 << " " << abs(un - True_Answer(i * h)) <<  endl;
         u0 = un;
         v0 = vn;
         
     }
 
     cout << "Max error is: " << m << " X is: " << ind_max_razn * h << endl;
-    cout << "Parameter is: " << p << endl;
+    cout << "Parameter is: " << p << "; h is " << h << endl;
     return 0;
 }
 
