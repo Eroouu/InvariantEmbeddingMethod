@@ -54,6 +54,7 @@ vector<vector<double>> vec_a(double h) // l is first, z is second
 	}
 	return ans;
 }
+/*
 double b(double z, double l, double h)
 {
 	if (abs(z - l) <= 1e-5)
@@ -64,7 +65,27 @@ double b(double z, double l, double h)
 double b_l(double z, double l, double h)
 {
 	return -r(l) * b(z, l, h);
+}*/
+vector<vector<double>> vec_b(double h) // l is first, z is second
+{
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j <= i ; j++)
+		{
+			if(j == 0)
+				temp.push_back(5.15);
+			else if (j == i)
+				temp.push_back(r(i * h));
+			else
+				temp.push_back(ans[i - 1][j] + h * (-r(i * h - h) * ans[i - 1][j]));
+		}
+		ans.push_back(temp);
+	}
+	return ans;
 }
+
 
 vector<double> vec_s(double h)
 {
@@ -97,47 +118,52 @@ int find_index(double l, double h)
 	}
 	return i;
 }
-vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a) // l first ind, z is second
+vector<vector<double>> vec_u(double h, vector<double> s, vector<vector<double>> b) // l first ind, z is second
 {
 	vector<vector<double>> ans;
 	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
 	{
 		vector<double> temp;
-		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
+		for (int j = 0; j <= i; j++) // для x меньшего чем l
 		{
-			if (j == 0)
-				temp.push_back(0);
-			else if (j == i)
-				temp.push_back(0);
+			if (j == i)
+				temp.push_back(s[i]);
 			else
-			{
-				/*double k1, k2, k3, k4;
-				k1 = y_l(j * h, (i - 1) * h, h, s, a);
-				k2 = y_l(j * h, (i - 1) * h, h, s, a);
-				k3 = y_l(j * h, (i - 1) * h, h, s, a);
-				k4 = y_l(j * h, (i - 1) * h, h, s, a);*/
-				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s,a));
-			}
-				
+				temp.push_back(ans[i - 1][j] - h * s[i - 1] * b[i - 1][j] );
 		}
 		ans.push_back(temp);
 	}
 	return ans;
 }
-double u(double z, double l, double h, vector<double> s)
+vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> u) // l first ind, z is second
 {
-	if (abs(z - l) <= 1e-5)
-		return s[find_index(l, h)];
-	else
-		return u(z, l - h, h,s) + h * u_l(z, l - h, h,s);
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
+	{
+		vector<double> temp;
+		for (int j = 0; j <= i; j++) // для x меньшего чем l
+		{
+			if (j == i || j == 0)
+				temp.push_back(0);
+			else
+				temp.push_back(temp[j - 1] + h * u[i][j - 1]);
+		}
+		ans.push_back(temp);
+	}
+	return ans;
 }
-double u_l(double z, double l, double h, vector<double> s)
+void PrintMatrix(vector<vector<double>> matrix)
 {
-	return -s[find_index(l,h)] * b(z, l, h);
-}
-double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a)
-{
-	return -s[find_index(l,h)] * a[find_index(l,h)][find_index(z,h)];
+	cout << " -------------------------------" << endl;
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		for (int j = 0; j < matrix[i].size(); j++)
+		{
+			cout << matrix[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << " -------------------------------" << endl;
 }
 void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 {
@@ -152,27 +178,20 @@ double ErrorCount(double h)
 {
 	double x = 0;
 	double err = 0;
-	vector<double> s1 = vec_s(h);
-	vector<double> s2 = vec_s(h/2);
-	vector < vector<double>> a1 = vec_a(h);
-	vector < vector<double>> a2 = vec_a(h/2);
-	vector<vector<double>> y1 = vec_y(h, s1, a1);
-	vector<vector<double>> y2 = vec_y(h/2, s2, a2);
-	vector<double> y;
-	for (int i = 0; i < y1.size(); i++)
-	{
-		y.push_back(2 * y1[y1.size() - 1][i] - y2[y2.size() - 1][2 * i]);
-	}
-	//tempOutput(y1, y2, h);
+	vector<double> s = vec_s(h);
+	vector<vector<double>> b = vec_b(h);
+	vector<vector<double>> u = vec_u(h, s, b);
+	vector<vector<double>> y = vec_y(h, s, u);
+	//PrintMatrix(b);
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < 1/h + 1; i++) 
 	{
-		double temp_otv = y[find_index(x, h)];
-		if (abs(temp_otv - RightAns(x))>err)
+		double temp_otv = y[y.size() - 1][i];
+		if (abs(temp_otv - RightAns(i * h))>err)
 		{
-			err = abs(temp_otv - RightAns(x));
+			err = abs(temp_otv - RightAns(i * h));
 		}
-		cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
+		cout << temp_otv << "  " << RightAns(i * h) << "  " << abs(temp_otv - RightAns(i * h)) << endl;
 		x += h;
 	}
 	return err;
@@ -180,7 +199,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.05;
+	double h = 0.005;
 	double err =ErrorCount(h);
 	cout << "Error is: " << err <<" h is: "<< h ;
 }
