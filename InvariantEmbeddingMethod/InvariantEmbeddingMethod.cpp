@@ -276,27 +276,18 @@ void Targetting_Method( double l)
     } while ( abs(tau_2 - tau_1) > 1e-6);
     cout << tau_2 << " " <<  RK(tau_2, l) << endl;
 }
-double RightAns(double x)
+
+void Class_test(double p,double q,double h)
 {
-    double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
-    return ans;
-}
-double RightAns2(double x)
-{
-    double ans = (1-exp(-2*x))/(2*(exp(-2)-1))+x/2;
-    return ans;
-}
-void Class_test(double h)
-{
-    BuildingEq sol1(1.,-2.);
-    sol1.set_s(h);
-    sol1.set_a(h);
-    sol1.set_y(h);
+    BuildingEq sol1(p,q,h);
+    sol1.set_s();
+    sol1.set_a();
+    sol1.set_y();
     vector<vector<double>> y1 = sol1.get_y();
-    BuildingEq sol2(1.,-2.);
-    sol2.set_s(h/2);
-    sol2.set_a(h/2);
-    sol2.set_y(h/2);
+    BuildingEq sol2(p,q,h/2);
+    sol2.set_s();
+    sol2.set_a();
+    sol2.set_y();
     vector<vector<double>> y2 = sol2.get_y();
     vector<double> y;
     for (int i = 0; i < y1.size(); i++)
@@ -308,11 +299,11 @@ void Class_test(double h)
     for (int i = 0; i < 1 / h + 1; i++)
     {
         double temp_otv = y[i];
-        if (abs(temp_otv - RightAns2(x)) > err)
+        if (abs(temp_otv - sol1.TrueY(x)) > err)
         {
-            err = abs(temp_otv - RightAns2(x));
+            err = abs(temp_otv - sol1.TrueY(x));
         }
-        cout << temp_otv << "  " << RightAns2(x) << "  " << abs(temp_otv - RightAns2(x)) << endl;
+        cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
         x += h;
     }
     cout << "Error is: " << err << " h is: " << h;
@@ -337,8 +328,10 @@ int main()
     cout << y(0.1, 1, 0.1) <<  endl;
     cout << " ///////////////////" << endl;*/
     //Targetting_Method(1);
-    double h = 0.05;
-    Class_test(h);
+    double h = 0.005;
+    double p = 1;
+    double q = -1;
+    Class_test(p,q,h);
     return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
