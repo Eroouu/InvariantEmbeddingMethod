@@ -91,61 +91,9 @@ void BuildingEq::set_y()
 
 void BuildingEq::set_all()
 {
-	// s part
-	double l = 0;
-	for (int i = 0; i < 1 / h + 1; i++)
-	{
-		if (i == 0)
-			vec_s.push_back(0);
-		else
-		{
-			double k1, k2, k3, k4;
-			k1 = 1 - vec_s[i - 1] * (1 + r(l));
-			k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h / 2));
-			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h / 2));
-			k4 = 1 - (vec_s[i - 1] + h * k3) * (1 + r(l + h));
-			//vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
-			vec_s.push_back(vec_s[i - 1] + h * k1);
-		}
-		l += h;
-	}
-	// a part
-	for (int i = 0; i < 1 / h + 1; i++)
-	{
-		vector<double> temp;
-		for (int j = 0; j < i + 1; j++)
-		{
-			if (j == 0)
-				temp.push_back(0);
-			else if (j == i)
-				temp.push_back(1);
-			else
-				temp.push_back(vec_a[i - 1][j] + h * (-r(i * h) * vec_a[i - 1][j]));
-		}
-		vec_a.push_back(temp);
-	}
-	// y part
-	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
-	{
-		vector<double> temp;
-		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
-		{
-			if (j == 0)
-				temp.push_back(0);
-			else if (j == i)
-				temp.push_back(0);
-			else
-			{
-				/*double k1, k2, k3, k4;
-				k1 = y_l(j * h, (i - 1) * h, h, s, a);
-				k2 = y_l(j * h, (i - 1) * h, h, s, a);
-				k3 = y_l(j * h, (i - 1) * h, h, s, a);
-				k4 = y_l(j * h, (i - 1) * h, h, s, a);*/
-				temp.push_back(vec_y[i - 1][j] - h * vec_s[this->find_index((i-1)*h,h)]*vec_a[this->find_index((i - 1) * h, h)][this->find_index(j*h,h)]); // y_l removed
-			}
-		}
-		vec_y.push_back(temp);
-	}
+	this->set_s();
+	this->set_a();
+	this->set_y();
 }
 
 int BuildingEq::find_index(double l, double h)
