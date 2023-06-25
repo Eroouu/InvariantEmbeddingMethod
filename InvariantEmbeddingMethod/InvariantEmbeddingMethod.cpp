@@ -5,6 +5,7 @@
 #include <vector>
 #include <math.h>
 #include <iomanip>
+#include "Base.h"
 #include "Bridge.h"
 #include "TargettingMethod.h"
 #include <ctime>
@@ -93,14 +94,14 @@ void TargetMethod(double q_con, double EI_x, double q, double l, double h)
 }
 int main()
 {
-    double h = 1e-5;
+    double h = 1e-3;
     double l = 1.;
     double q_con = 1.;
     double EI_x = 1.;
-   /* double start_time1 = clock();
+    double start_time1 = clock();
     ClassicMethod(q_con, EI_x, 0, l,h);
     double end_time1 = clock();
-    cout << "runtime of InvEmbedding = " << (end_time1-start_time1) / 1000.0 << endl;*/
+    cout << "runtime of InvEmbedding = " << (end_time1-start_time1) / 1000.0 << endl;
     //RungeMethod(1., 1., 0 ,l,h);
     double start_time2 = clock();
     TargetMethod(q_con, EI_x, 0, l, h);

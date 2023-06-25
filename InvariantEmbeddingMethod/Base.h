@@ -1,21 +1,24 @@
 #pragma once
 #include<vector>
-using namespace std
+using namespace std;
 class Base
 {
 public:
 	Base();
-	Base(double tempQcon, double tempEIx, double tempQ, double tempL, double tempH);
+	Base(double tempQ, double tempL, double tempH);
 	void set_s();
 	void set_a();
 	void set_y();
 	void set_all();
 	int find_index(double x, double h);
-	double r(double x);
-	double p(double x);
+	virtual double r(double x);
+	virtual double p(double x);
 	vector<vector<double>> get_y();
 	vector<double> get_ans();
 	virtual double TrueY(double x);
+	double get_l();
+	double get_h();
+	double get_q();
 protected:
 
 private:
@@ -23,10 +26,8 @@ private:
 	vector<vector<double>> vec_a;
 	vector<vector<double>> vec_y;
 	vector<double> ans;
-	double q_con;
-	double EI_x;
-	double q;
 	double l;
 	double h;
+	double q;
 };
 
