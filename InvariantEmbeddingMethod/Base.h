@@ -20,14 +20,15 @@ public:
 	double get_h();
 	double get_q();
 protected:
-
+	double l;
+	double h;
+	double q;
 private:
 	vector<double> vec_s;
 	vector<vector<double>> vec_a;
 	vector<vector<double>> vec_y;
 	vector<double> ans;
-	double l;
-	double h;
-	double q;
+	
+	
 };
 
