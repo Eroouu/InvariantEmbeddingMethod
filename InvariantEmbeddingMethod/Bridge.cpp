@@ -1,5 +1,5 @@
-#include "BuildingEq.h"
-BuildingEq::BuildingEq()
+#include "Bridge.h"
+Bridge::Bridge()
 {
 	q_con = 1.;
 	EI_x = 1.;
@@ -7,7 +7,7 @@ BuildingEq::BuildingEq()
 	h = 0.05;
 	l = 1;
 }
-BuildingEq::BuildingEq(double tempQcon, double tempEIx, double tempQ,double tempL, double tempH)
+Bridge::Bridge(double tempQcon, double tempEIx, double tempQ,double tempL, double tempH)
 {
 	q_con = tempQcon;
 	EI_x = tempEIx;
@@ -15,11 +15,11 @@ BuildingEq::BuildingEq(double tempQcon, double tempEIx, double tempQ,double temp
 	h = tempH;
 	l = tempL;
 }
-double BuildingEq::p(double x)
+double Bridge::p(double x)
 {
 	return 1./(EI_x) * (q_con * x * l / 2 - q_con * x * x / 2);
 }
-void BuildingEq::set_s()
+void Bridge::set_s()
 {
 	double x = 0;
 	for (int i = 0; i < l / h + 1; i++)
@@ -39,18 +39,18 @@ void BuildingEq::set_s()
 		x += h;
 	}
 }
-double BuildingEq::r(double x)
+double Bridge::r(double x)
 {
 	double k = -q;
 	//return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
 	return 1. / x;
 }
 
-vector<vector<double>> BuildingEq::get_y()
+vector<vector<double>> Bridge::get_y()
 {
 	return vec_y;
 }
-vector<double> BuildingEq::get_ans()
+vector<double> Bridge::get_ans()
 {
 	vector<double> ans;
 	vector<vector<double>> y = this->get_y();
@@ -60,14 +60,14 @@ vector<double> BuildingEq::get_ans()
 	}
 	return ans;
 }
-double BuildingEq::TrueY(double x)
+double Bridge::TrueY(double x)
 {
 	//double ans = 1. / (-q) * ((1 - exp(q * x / p(x, 1))) / (exp(q / p(x,1)) - 1) + x);
 	//double ans = -(1. / 24) * q_con * x * x * x * x / EI_x + l*(1. / 12) * q_con * x * x * x / EI_x - (1. / 24)*l*l*l* q_con * x / EI_x;
 	double ans = -(1. / 24) * q_con * (x * x * x * x - 2 * l * x * x * x + l * l * l * x) / EI_x;
 	return ans;
 }
-void BuildingEq::set_a() // l is first, z is second
+void Bridge::set_a() // l is first, z is second
 {
 	
 	for (int i = 0; i < l / h + 1; i++)
@@ -86,7 +86,7 @@ void BuildingEq::set_a() // l is first, z is second
 	}
 }
 
-void BuildingEq::set_y()
+void Bridge::set_y()
 {
 	for (int i = 0; i < l / h + 1; i++) // для определенного значения l 
 	{
@@ -106,14 +106,14 @@ void BuildingEq::set_y()
 	}
 }
 
-void BuildingEq::set_all()
+void Bridge::set_all()
 {
 	this->set_s();
 	this->set_a();
 	this->set_y();
 }
 
-int BuildingEq::find_index(double x, double h)
+int Bridge::find_index(double x, double h)
 {
 	int i = 0;
 	while (abs(i - x / h) > 1e-5)

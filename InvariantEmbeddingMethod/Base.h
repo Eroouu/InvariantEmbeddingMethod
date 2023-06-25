@@ -1,11 +1,11 @@
 #pragma once
 #include<vector>
-using namespace std;
-class BuildingEq
+using namespace std
+class Base
 {
 public:
-	BuildingEq();
-	BuildingEq(double tempQcon, double tempEIx, double tempQ,double tempL, double tempH);
+	Base();
+	Base(double tempQcon, double tempEIx, double tempQ, double tempL, double tempH);
 	void set_s();
 	void set_a();
 	void set_y();
@@ -15,9 +15,9 @@ public:
 	double p(double x);
 	vector<vector<double>> get_y();
 	vector<double> get_ans();
-	double TrueY(double x);
+	virtual double TrueY(double x);
 protected:
-	
+
 private:
 	vector<double> vec_s;
 	vector<vector<double>> vec_a;

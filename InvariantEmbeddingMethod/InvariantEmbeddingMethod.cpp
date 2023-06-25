@@ -5,14 +5,14 @@
 #include <vector>
 #include <math.h>
 #include <iomanip>
-#include "BuildingEq.h"
+#include "Bridge.h"
 #include "TargettingMethod.h"
 #include <ctime>
 using namespace std;
 
 void ClassicMethod(double q_con, double EI_x, double q,double l, double h)
 {
-    BuildingEq sol1(q_con, EI_x, q,l, h);
+    Bridge sol1(q_con, EI_x, q,l, h);
     sol1.set_all();
     vector<double> y = sol1.get_ans();
     double err = 0, x = 0;
@@ -31,12 +31,12 @@ void ClassicMethod(double q_con, double EI_x, double q,double l, double h)
 }
 void RungeMethod(double q_con, double EI_x, double q,double l, double h)
 {
-    BuildingEq sol1(q_con, EI_x, q,l, h);
+    Bridge sol1(q_con, EI_x, q,l, h);
     sol1.set_s();
     sol1.set_a();
     sol1.set_y();
     vector<vector<double>> y1 = sol1.get_y();
-    BuildingEq sol2(q_con, EI_x, q, l, h/2);
+    Bridge sol2(q_con, EI_x, q, l, h/2);
     sol2.set_s();
     sol2.set_a();
     sol2.set_y();

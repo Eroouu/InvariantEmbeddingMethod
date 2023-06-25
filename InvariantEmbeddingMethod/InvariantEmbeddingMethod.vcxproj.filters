@@ -18,18 +18,24 @@
     <ClCompile Include="InvariantEmbeddingMethod.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="BuildingEq.cpp">
+    <ClCompile Include="Bridge.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="TargettingMethod.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BuildingEq.h">
+    <ClInclude Include="Bridge.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="TargettingMethod.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
