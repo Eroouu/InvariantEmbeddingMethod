@@ -11,25 +11,65 @@ using namespace std;
 
 namespace m752
 {
-	const double p = 1.;
-	const double q = -1.;
-
-	double f(double u)
+	const double l = 1;
+	const double a1 = 1;
+	const double a2 = 0;
+	const double a3 = 1;
+	const double a4 = 0;
+	double a(double t)
 	{
-		return u;
+		return 0;
 	}
-	double g(double x,double u, double l) // возможен 3й аргумент
+	double b(double t)
 	{
-		return p - q * u;
+		return 1;
 	}
-
+	double c(double t)
+	{
+		return 0;
+	}
+	double d(double t)
+	{
+		return -1;
+	}
+	double f(double t)
+	{
+		return 1;
+	}
 }
 
 using namespace m752;
-double r(double l)
+
+int find_index(double l, double h)
 {
-	double k = -q;
-	return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
+	int i = 0;
+	while (abs(i - l / h) > 1e-5 )
+	{
+		i++;
+	}
+	return i;
+}
+
+vector<double> vec_r(double h) // l is first, z is second
+{
+	vector<double> ans_r;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		if (i == 0)
+			ans_r.push_back(a2 / (a3 * a2 - a1 * a4));
+		else
+		{
+			ans_r.push_back(ans_r[i - 1]  + dr(i * h, ans_r);
+		}
+			
+	}
+	return ans_r;
+}
+double dr(double t, vector<double> vec_r, vector<double> vec_s)
+{
+	double temps = vec_s[find_index(t, l)] , tempr = vec_s[find_index(t, l)];;
+	return b(t) * temps + tempr * ( a(t) - a3 * b(t) * temps - a4 * d(t) * temps)
+		- tempr * tempr * (a3 * a(t) + a4 * c(t));
 }
 
 double RightAns(double x)
@@ -95,15 +135,7 @@ vector<double> vec_s(double h)
 	}
 	return vec_s;
 }
-int find_index(double l, double h)
-{
-	int i = 0;
-	while (abs(i - l / h) > 1e-5 )
-	{
-		i++;
-	}
-	return i;
-}
+
 vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a) // l first ind, z is second
 {
 	vector<vector<double>> ans;
