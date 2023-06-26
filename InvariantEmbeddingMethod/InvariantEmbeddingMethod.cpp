@@ -49,7 +49,7 @@ vector<vector<double>> vec_a(double h) // l is first, z is second
 	{
 		vector<double> temp;
 		for (int j = 0; j < i + 1; j++)
-		{
+		{  
 			if (j == 0)
 				temp.push_back(0);
 			else if (j == i)
