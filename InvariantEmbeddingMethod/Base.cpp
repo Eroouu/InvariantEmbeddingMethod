@@ -1,17 +1,22 @@
 #include "Base.h"
+#include <iostream>
 
 Base::Base()
 {
 	q = 0;
 	h = 0.05;
 	l = 1;
+	bc_l = 0;
+	bc_r = 0;
 }
 
-Base::Base(double tempQ, double tempL, double tempH)
+Base::Base(double q, double l, double h, double bc_l, double bc_r)
 {
-	q = tempQ;
-	h = tempH;
-	l = tempL;
+	this->q = q;
+	this->l = l;
+	this->h = h;
+	this->bc_l = bc_l;
+	this->bc_r = bc_r;
 }
 
 void Base::set_s()
@@ -61,12 +66,12 @@ void Base::set_y()
 		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
 		{
 			if (j == 0)
-				temp.push_back(0);
+				temp.push_back(bc_l);
 			else if (j == i)
-				temp.push_back(0);
+				temp.push_back(bc_r);
 			else
 			{
-				temp.push_back(vec_y[i - 1][j] - h * vec_s[this->find_index((i - 1) * h, h)] * vec_a[this->find_index((i - 1) * h, h)][this->find_index(j * h, h)]); // y_l removed
+				temp.push_back(vec_y[i - 1][j] - h * vec_s[find_index((i - 1) * h, h)] * vec_a[find_index((i - 1) * h, h)][find_index(j * h, h)]); // y_l removed
 			}
 		}
 		vec_y.push_back(temp);
@@ -75,9 +80,9 @@ void Base::set_y()
 
 void Base::set_all()
 {
-	this->set_s();
-	this->set_a();
-	this->set_y();
+	set_s();
+	set_a();
+	set_y();
 }
 
 int Base::find_index(double x, double h)
@@ -94,7 +99,7 @@ double Base::r(double x)
 {
 	double k = -q;
 	//return sqrt(k) * (exp(2 * sqrt(k) * l) + 1) / (exp(2 * sqrt(k) * l) - 1);
-	return 1. / x;
+	return 0.0;
 }
 
 double Base::p(double x)
@@ -136,4 +141,22 @@ double Base::get_h()
 double Base::get_q()
 {
 	return q;
+}
+void Base::debug()
+{
+	cout << "Vector a\n";
+	for (int i = 0; i < l / h + 1; i++)
+	{
+		cout << "Index i:" << i << endl;
+		for (int j = 0; j < i + 1; j++)
+		{
+			cout << vec_a[i][j]<<endl;
+		}
+	}
+	cout << "Vector s\n";
+	for (int i = 0; i < l / h + 1; i++)
+	{
+		cout << vec_s[i] << endl;
+
+	}
 }

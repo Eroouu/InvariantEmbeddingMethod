@@ -11,13 +11,14 @@
 #include <ctime>
 using namespace std;
 
-void ClassicMethod(double q_con, double EI_x, double q,double l, double h)
+void ClassicMethod(double q_con, double EI_x, double q,double l, double h, double bc_l, double bc_r)
 {
-    Bridge sol1(q_con, EI_x, q,l, h);
+    Bridge sol1(q_con, EI_x, q,l, h,bc_l,bc_r);
     sol1.set_all();
     vector<double> y = sol1.get_ans();
     double err = 0, x = 0;
-    //cout << "Y   TrueY  currErr\n";
+    sol1.debug();
+    cout << "Y   TrueY  currErr\n";
     for (int i = 0; i < l / h + 1; i++)
     {
         double temp_otv = y[i];
@@ -25,22 +26,18 @@ void ClassicMethod(double q_con, double EI_x, double q,double l, double h)
         {
             err = abs(temp_otv - sol1.TrueY(x));
         }
-        //cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
+        cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
         x += h;
     }
     cout << "Error is: " << err << " h is: " << h<< endl;
 }
-void RungeMethod(double q_con, double EI_x, double q,double l, double h)
+void RungeMethod(double q_con, double EI_x, double q,double l, double h,double bc_l, double bc_r)
 {
-    Bridge sol1(q_con, EI_x, q,l, h);
-    sol1.set_s();
-    sol1.set_a();
-    sol1.set_y();
+    Bridge sol1(q_con, EI_x, q,l, h, bc_l, bc_r);
+    sol1.set_all();
     vector<vector<double>> y1 = sol1.get_y();
-    Bridge sol2(q_con, EI_x, q, l, h/2);
-    sol2.set_s();
-    sol2.set_a();
-    sol2.set_y();
+    Bridge sol2(q_con, EI_x, q, l, h/2,bc_l,bc_r);
+    sol2.set_all();
     vector<vector<double>> y2 = sol2.get_y();
     vector<double> y;
     for (int i = 0; i < y1.size(); i++)
@@ -94,12 +91,14 @@ void TargetMethod(double q_con, double EI_x, double q, double l, double h)
 }
 int main()
 {
-    double h = 1e-3;
+    double h = 1e-1;
     double l = 1.;
     double q_con = 1.;
     double EI_x = 1.;
+    double bc_l = 0;
+    double bc_r = 1;
     double start_time1 = clock();
-    ClassicMethod(q_con, EI_x, 0, l,h);
+    ClassicMethod(q_con, EI_x, 0, l,h,bc_l,bc_r);
     double end_time1 = clock();
     cout << "runtime of InvEmbedding = " << (end_time1-start_time1) / 1000.0 << endl;
     //RungeMethod(1., 1., 0 ,l,h);
