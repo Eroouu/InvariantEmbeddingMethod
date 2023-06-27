@@ -169,13 +169,32 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 	ans_m_n.push_back(temp_n);
 	return ans_m_n;
 }
-
-double dn(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
+vector<vector<double>> vec_u(double h, vector<double> vec_m, vector<double> vec_n, vector<vector<double>> vec_p)
 {
-	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
-	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
-		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
+	vector<vector<double>> ans_u;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j <= i; j++)
+		{
+			if (i == j)
+			{
+				temp.push_back(vec_m[i]);
+			}
+			else
+			{
+				double T = (i - 1) * h;
+				double du = -(vec_m[j] * (a3 * a(T) + a4 * c(T))
+					+ vec_n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * vec_p[i - 1][j];
+				temp.push_back(ans_u[i - 1][j] + h * du);
+			}
+		}
+		ans_u.push_back(temp);
+	}
+	
+	return ans_u;
 }
+
 void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 {
 	cout << "y1         y2\n";
