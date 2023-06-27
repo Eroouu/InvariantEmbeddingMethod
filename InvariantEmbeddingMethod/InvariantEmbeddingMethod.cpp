@@ -50,20 +50,27 @@ int find_index(double l, double h)
 	return i;
 }
 
-vector<double> vec_r(double h) // l is first, z is second
+vector<vector<double>> vec_r_s(double h) // l is first, z is second
 {
-	vector<double> ans_r;
+	vector<double> ans_r, ans_s;
 	for (int i = 0; i < 1 / h + 1; i++)
 	{
 		if (i == 0)
+		{
 			ans_r.push_back(a2 / (a3 * a2 - a1 * a4));
+			ans_s.push_back(a1 / (a1 * a4 - a2 * a3));
+		}
 		else
 		{
-			ans_r.push_back(ans_r[i - 1]  + dr(i * h, ans_r);
+			ans_r.push_back(ans_r[i - 1]  + dr(i * h, ans_r, ans_s));
+			ans_s.push_back(ans_s[i - 1] + ds(i * h, ans_r, ans_s));
 		}
 			
 	}
-	return ans_r;
+	vector<vector<double>> rez;
+	rez.push_back(ans_r);
+	rez.push_back(ans_s);
+	return rez;
 }
 double dr(double t, vector<double> vec_r, vector<double> vec_s)
 {
@@ -71,16 +78,61 @@ double dr(double t, vector<double> vec_r, vector<double> vec_s)
 	return b(t) * temps + tempr * ( a(t) - a3 * b(t) * temps - a4 * d(t) * temps)
 		- tempr * tempr * (a3 * a(t) + a4 * c(t));
 }
-
-double RightAns(double x)
+double ds(double t, vector<double> vec_r, vector<double> vec_s)
 {
-	double ans = (-exp(1) * x + x - exp(1 - x) + exp(1)) / (1 - exp(1));
-	return ans;
+	double temps = vec_s[find_index(t, l)], tempr = vec_s[find_index(t, l)];;
+	return c(t) * tempr + temps * (d(t) - a3 * a(t) * tempr - a4 * c(t) * tempr)
+		- temps * temps * (a3 * b(t) + a4 * d(t));
 }
 
-double b_l(double z, double l, double h);
-double u_l(double z, double l, double h, vector<double> s);
-double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a);
+vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_s)
+{
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j <= i; j++)
+		{
+			if (i == j)
+				temp.push_back(vec_r[find_index(i, l)]);
+			else
+				temp.push_back(ans[i-1][j] + h * dp(j, i, h, vec_r, vec_s) * ans[i - 1][j] );
+		}
+		ans.push_back(temp);
+	}
+
+	return ans;
+}
+double dp(int t, int T,double h,  vector<double> vec_r, vector<double> vec_s)
+{
+	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
+	return -( tempr * (a3 * a(t * h) + a4 * c(t * h)) 
+		+ temps * (a3 * b(t * h) + a4 * d(t * h)) );
+}
+vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_s)
+{
+	vector<vector<double>> ans;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j <= i; j++)
+		{
+			if (i == j)
+				temp.push_back(vec_s[find_index(i, l)]);
+			else
+				temp.push_back(ans[i - 1][j] + h * dq(j, i, h, vec_r, vec_s) * ans[i - 1][j]);
+		}
+		ans.push_back(temp);
+	}
+
+	return ans;
+}
+double dq(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
+{
+	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
+	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
+		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
+}
 
 vector<vector<double>> vec_a(double h) // l is first, z is second
 {
