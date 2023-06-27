@@ -260,6 +260,7 @@ double ErrorCount(double h)
 		cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
 		x += h;
 	}*/
+
 	double koord = 0;
 	for (int i = 0; i < 1 / h + 1; i++)
 	{
@@ -271,7 +272,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.1;
+	double h = 0.05;
 	cout << " Maksim lox " << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
