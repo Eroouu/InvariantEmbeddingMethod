@@ -84,7 +84,6 @@ double ds(double t, vector<double> vec_r, vector<double> vec_s)
 	return c(t) * tempr + temps * (d(t) - a3 * a(t) * tempr - a4 * c(t) * tempr)
 		- temps * temps * (a3 * b(t) + a4 * d(t));
 }
-
 vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_s)
 {
 	vector<vector<double>> ans;
@@ -134,101 +133,48 @@ double dq(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
 		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
 }
 
-vector<vector<double>> vec_a(double h) // l is first, z is second
+vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> vec_s)
 {
-	vector<vector<double>> ans;
+	vector<vector<double>> ans_m_n;
+	vector<double> temp_n, temp_m;
 	for (int i = 0; i < 1 / h + 1; i++)
 	{
-		vector<double> temp;
-		for (int j = 0; j < i + 1; j++)
-		{  
-			if (j == 0)
-				temp.push_back(0);
-			else if (j == i)
-				temp.push_back(1);
-			else
-				temp.push_back(ans[i - 1][j] + h *(-r(i*h)*ans[i-1][j]));
+		if (i == 0)
+		{
+			temp_m.push_back(0);
+			temp_n.push_back(0);
 		}
-		ans.push_back(temp);
-	}
-	return ans;
-}
-double b(double z, double l, double h)
-{
-	if (abs(z - l) <= 1e-5)
-		return r(l);
-	else
-		return b(z, l - h, h) + h * b_l(z , l - h, h);
-}
-double b_l(double z, double l, double h)
-{
-	return -r(l) * b(z, l, h);
-}
-
-vector<double> vec_s(double h)
-{
-	vector<double> vec_s;
-	double l = 0;
-	for (int i = 0; i < 1 / h + 1; i++)
-	{
-		if (i==0)
-			vec_s.push_back(0);
 		else
 		{
-			double k1, k2, k3, k4;
-			k1 = 1 - vec_s[i - 1] * (1 + r(l));
-			k2 = 1 - (vec_s[i - 1] + h / 2 * k1) * (1 + r(l + h/2));
-			k3 = 1 - (vec_s[i - 1] + h / 2 * k2) * (1 + r(l + h/2));
-			k4 = 1 - (vec_s[i - 1] + h  * k3) * (1 + r(l + h));
-			//vec_s.push_back(vec_s[i-1] + h*(k1 + 2*k2 + 2*k3 + k4) / 6);
-			vec_s.push_back(vec_s[i - 1] + h * k1);
-		}	
-		l += h;
+			double otr_part = temp_m[i - 1] * (a3 * a(i * h) + a4 * c(i * h)) +
+				temp_n[i - 1] * (a3 * b(i * h) + a4 * d(i * h))
+				+ f(i * h);
+			temp_m.push_back(temp_m[i - 1] 
+				+ h * 
+				(
+					a(i*h) * temp_m[i-1] + b(i*h) * temp_n[i-1]
+					- otr_part * vec_r[i]
+				)
+				* temp_m[i - 1]);
+			temp_n.push_back(temp_n[i - 1]
+				+ h *
+				(
+					c(i * h) * temp_m[i - 1] + d(i * h) * temp_n[i - 1] + f(i * h)
+					- otr_part * vec_s[i]
+					)
+				* temp_m[i - 1]);
+		}
 	}
-	return vec_s;
+	ans_m_n.push_back(temp_m);
+	ans_m_n.push_back(temp_n);
+	return ans_m_n;
 }
 
-vector<vector<double>> vec_y(double h, vector<double> s,vector<vector<double>> a) // l first ind, z is second
+double dn(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
 {
-	vector<vector<double>> ans;
-	for (int i = 0; i < 1 / h + 1; i++) // для определенного значения l 
-	{
-		vector<double> temp;
-		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
-		{
-			if (j == 0)
-				temp.push_back(0);
-			else if (j == i)
-				temp.push_back(0);
-			else
-			{
-				/*double k1, k2, k3, k4;
-				k1 = y_l(j * h, (i - 1) * h, h, s, a);
-				k2 = y_l(j * h, (i - 1) * h, h, s, a);
-				k3 = y_l(j * h, (i - 1) * h, h, s, a);
-				k4 = y_l(j * h, (i - 1) * h, h, s, a);*/
-				temp.push_back(ans[i - 1][j] + h * y_l(j*h, i*h - h, h, s,a));
-			}
-				
-		}
-		ans.push_back(temp);
-	}
-	return ans;
-}
-double u(double z, double l, double h, vector<double> s)
-{
-	if (abs(z - l) <= 1e-5)
-		return s[find_index(l, h)];
-	else
-		return u(z, l - h, h,s) + h * u_l(z, l - h, h,s);
-}
-double u_l(double z, double l, double h, vector<double> s)
-{
-	return -s[find_index(l,h)] * b(z, l, h);
-}
-double y_l(double z, double l, double h, vector<double> s, vector<vector<double>> a)
-{
-	return -s[find_index(l,h)] * a[find_index(l,h)][find_index(z,h)];
+	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
+	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
+		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
 }
 void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 {
