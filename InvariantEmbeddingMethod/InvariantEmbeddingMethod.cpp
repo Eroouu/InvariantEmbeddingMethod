@@ -7,13 +7,14 @@
 #include <vector>
 #include <tuple>
 #include <math.h>
+
 using namespace std;
 
 namespace m752
 {
 	const double l = 1;
 	const double a1 = 1;
-	const double a2 = 0;
+	const double a2 = 1;
 	const double a3 = 1;
 	const double a4 = 0;
 	double a(double t)
@@ -43,14 +44,14 @@ using namespace m752;
 int find_index(double l, double h)
 {
 	int i = 0;
-	while (abs(i - l / h) > 1e-5 )
+	while (abs(i - l / h) > 1e-5)
 	{
 		i++;
 	}
 	return i;
 }
-double dr(double t, vector<double> vec_r, vector<double> vec_s);
-double ds(double t, vector<double> vec_r, vector<double> vec_s);
+double dr(double i, double h, vector<double> vec_r, vector<double> vec_s);
+double ds(double i, double h, vector<double> vec_r, vector<double> vec_s);
 
 vector<vector<double>> vec_r_s(double h) // l is first, z is second
 {
@@ -64,25 +65,25 @@ vector<vector<double>> vec_r_s(double h) // l is first, z is second
 		}
 		else
 		{
-			ans_r.push_back(ans_r[i - 1]  + dr(i * h, ans_r, ans_s));
-			ans_s.push_back(ans_s[i - 1] + ds(i * h, ans_r, ans_s));
+			ans_r.push_back(ans_r[i - 1] + h * dr(i - 1, h, ans_r, ans_s));
+			ans_s.push_back(ans_s[i - 1] + h * ds(i - 1, h, ans_r, ans_s));
 		}
-			
+
 	}
 	vector<vector<double>> rez;
 	rez.push_back(ans_r);
 	rez.push_back(ans_s);
 	return rez;
 }
-double dr(double t, vector<double> vec_r, vector<double> vec_s)
+double dr(double i, double h,  vector<double> vec_r, vector<double> vec_s)
 {
-	double temps = vec_s[find_index(t, l)] , tempr = vec_s[find_index(t, l)];;
-	return b(t) * temps + tempr * ( a(t) - a3 * b(t) * temps - a4 * d(t) * temps)
+	double temps = vec_s[i], tempr = vec_r[i], t = i * h;
+	return b(t) * temps + tempr * (a(t) - a3 * b(t) * temps - a4 * d(t) * temps)
 		- tempr * tempr * (a3 * a(t) + a4 * c(t));
 }
-double ds(double t, vector<double> vec_r, vector<double> vec_s)
+double ds(double i, double h, vector<double> vec_r, vector<double> vec_s)
 {
-	double temps = vec_s[find_index(t, l)], tempr = vec_s[find_index(t, l)];;
+	double temps = vec_s[i], tempr = vec_r[i],t = i * h;
 	return c(t) * tempr + temps * (d(t) - a3 * a(t) * tempr - a4 * c(t) * tempr)
 		- temps * temps * (a3 * b(t) + a4 * d(t));
 }
@@ -99,18 +100,18 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_r[find_index(i, l)]);
 			else
-				temp.push_back(ans[i-1][j] + h * dp(j, i, h, vec_r, vec_s) * ans[i - 1][j] );
+				temp.push_back(ans[i - 1][j] + h * dp(j, i, h, vec_r, vec_s) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
 
 	return ans;
 }
-double dp(int t, int T,double h,  vector<double> vec_r, vector<double> vec_s)
+double dp(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
 {
 	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
-	return -( tempr * (a3 * a(t * h) + a4 * c(t * h)) 
-		+ temps * (a3 * b(t * h) + a4 * d(t * h)) );
+	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
+		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
 }
 vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_s)
 {
@@ -153,12 +154,12 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 			double otr_part = temp_m[i - 1] * (a3 * a(i * h) + a4 * c(i * h)) +
 				temp_n[i - 1] * (a3 * b(i * h) + a4 * d(i * h))
 				+ f(i * h);
-			temp_m.push_back(temp_m[i - 1] 
-				+ h * 
+			temp_m.push_back(temp_m[i - 1]
+				+ h *
 				(
-					a(i*h) * temp_m[i-1] + b(i*h) * temp_n[i-1]
+					a(i * h) * temp_m[i - 1] + b(i * h) * temp_n[i - 1]
 					- otr_part * vec_r[i]
-				)
+					)
 				* temp_m[i - 1]);
 			temp_n.push_back(temp_n[i - 1]
 				+ h *
@@ -235,9 +236,9 @@ double ErrorCount(double h)
 	double err = 0;
 	vector<vector<double>>  rs = vec_r_s(h);
 	vector<double> r = rs[0], s = rs[1];
-	vector < vector<double>> p = vec_p(h, r, s);
-	vector < vector<double>> q = vec_q(h, r, s);
-	vector<vector<double>> mn = vec_m_n(h, r, s);
+	vector< vector<double>> p = vec_p(h, r, s);
+	vector< vector<double>> q = vec_q(h, r, s);
+	vector< vector<double>> mn = vec_m_n(h, r, s);
 	vector<double> m = mn[0], n = mn[1];
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
@@ -245,7 +246,7 @@ double ErrorCount(double h)
 	vector<double> x;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
-		x.push_back(u[u.size() - 1][i] + p[p.size()-1][i]);
+		x.push_back(u[u.size() - 1][i] + p[p.size() - 1][i]);
 	}
 
 	cout << "Y   TrueY  currErr\n";
@@ -270,9 +271,11 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.05;
-	double err =ErrorCount(h);
-	cout << "Error is: " << err <<" h is: "<< h ;
+	double h = 0.1;
+	cout << " Maksim lox " << endl;
+	double err = ErrorCount(h);
+	cout << "Error is: " << err << " h is: " << h;
+	return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
