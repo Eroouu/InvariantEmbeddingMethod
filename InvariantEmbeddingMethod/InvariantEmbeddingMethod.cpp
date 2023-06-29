@@ -14,12 +14,12 @@ namespace m752
 {
 	const double l = 1;
 	const double a1 = 1;
-	const double a2 = 1;
+	const double a2 = 2;
 	const double a3 = 1;
-	const double a4 = 0;
+	const double a4 = 1.5;
 	double a(double t)
 	{
-		return 0;
+		return 1;
 	}
 	double b(double t)
 	{
@@ -27,7 +27,7 @@ namespace m752
 	}
 	double c(double t)
 	{
-		return 0;
+		return 1;
 	}
 	double d(double t)
 	{
@@ -78,7 +78,7 @@ vector<vector<double>> vec_r_s(double h) // l is first, z is second
 }
 double dr(double t,  double r, double s)
 {
-	cout << b(t) * s << " | " << r * (a(t) - a3 * b(t) * s - a4 * d(t) * s) << " | " << -r * r * (a3 * a(t) + a4 * c(t)) << endl;
+	//cout << b(t) * s << " | " << r * (a(t) - a3 * b(t) * s - a4 * d(t) * s) << " | " << -r * r * (a3 * a(t) + a4 * c(t)) << endl;
 	return b(t) * s
 		+ r * (a(t) - a3 * b(t) * s - a4 * d(t) * s)
 		- r * r * (a3 * a(t) + a4 * c(t));
@@ -261,17 +261,17 @@ void PrintVector(vector<double> matrix)
 	
 	cout << "--------------------------------------" << endl;
 }
-double TrueAnswer(double h)
+double TrueAnswer(double t)
 {
-	return exp(1) * exp(-h) + h - 1;
+	return 2 * exp(2*t) / (5 * exp(2) - 3) - t/2 - (-9 + 5* exp(2))/ (5 * exp(2) - 3);
 }
 double ErrorCount(double h)
 {
 	double err = 0;
 	vector<vector<double>>  rs = vec_r_s(h);
 	vector<double> r = rs[0], s = rs[1];
-	PrintVector(r);
-	PrintVector(s);
+	//PrintVector(r);
+	//PrintVector(s);
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
 	vector< vector<double>> mn = vec_m_n(h, r, s);
@@ -280,11 +280,13 @@ double ErrorCount(double h)
 	vector<vector<double>> v = vec_v(h, m, n, q);
 	//PrintMatrix(u);
 	//PrintMatrix(p);
+	
 	vector<double> x;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
 		x.push_back(u[u.size() - 1][i] + p[p.size() - 1][i]);
 	}
+	//PrintVector(x);
 	double koord = 0;
 	cout << "Y   TrueY  currErr\n";
 	for (int i = 0; i < l / h + 1; i++)
@@ -294,7 +296,7 @@ double ErrorCount(double h)
 		{
 			err = abs(temp_otv - TrueAnswer(koord));
 		}
-		//cout << temp_otv << "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
+		cout << temp_otv << "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
 		koord += h;
 	}
 	/*
@@ -309,7 +311,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.05;
+	double h = 0.01;
 	cout << " Maxim lox " << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
