@@ -300,7 +300,7 @@ int main()
 {
 	//EilerMeth(0.01);
 	double h = 0.01;
-	cout << " Maxim lox " << endl;
+	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
 	return 0;
