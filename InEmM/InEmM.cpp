@@ -48,15 +48,13 @@ double f(double t)
 }
 double f1(double t, double r, double s)
 {
-    return b(t) * s
-        + r * (a(t) - a3 * b(t) * s - a4 * d(t) * s)
-        - r * r * (a3 * a(t) + a4 * c(t));
+    return s - r * s - r * r;
+    //b(t) * s + r * (a(t) - a3 * b(t) * s - a4 * d(t) * s) - r * r * (a3 * a(t) + a4 * c(t));
 }
 double f2(double t, double r, double s)
 {
-    return c(t) * r
-        + s * (d(t) - a3 * a(t) * r - a4 * c(t) * r)
-        - s * s * (a3 * b(t) + a4 * d(t));
+    return s * s;
+        //c(t) * r + s * (d(t) - a3 * a(t) * r - a4 * c(t) * r) - s * s * (a3 * b(t) + a4 * d(t));
 }
 
 vector<vector<double>> RK(double l)
@@ -82,7 +80,7 @@ vector<vector<double>> RK(double l)
         l4 = f2(h * i + h, r[i] + h * k3, s[i] + h * l3);
 
         r.push_back(r[i] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6);
-        s.push_back(r[i] + h * (l1 + 2 * l2 + 2 * l3 + l4) / 6);
+        s.push_back(s[i] + h * (l1 + 2 * l2 + 2 * l3 + l4) / 6);
     }
     rs.push_back(r);
     rs.push_back(s);
