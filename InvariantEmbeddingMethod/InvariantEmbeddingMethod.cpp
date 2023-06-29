@@ -264,7 +264,7 @@ double TrueAnswer(double t)
 double ErrorCount(double h)
 {
 	double err = 0;
-	vector<vector<double>>  rs = vec_r_s(h);
+	vector<vector<double>> vec_r_s(h);
 	vector<double> r = rs[0], s = rs[1];
 	//PrintVector(r);
 	//PrintVector(s);
