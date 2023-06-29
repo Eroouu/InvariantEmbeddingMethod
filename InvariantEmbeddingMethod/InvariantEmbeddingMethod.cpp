@@ -150,23 +150,12 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 		else
 		{
 			double t = i - 1;
-			double otr_part = m[t] * (a3 * a(t * h) + a4 * c(t * h)) 
-							+ n[t] * (a3 * b(t * h) + a4 * d(t * h))
-						    + f(t * h);
+			double otr_part = m[t] * (a3 * a(t * h) + a4 * c(t * h)) + n[t] * (a3 * b(t * h) + a4 * d(t * h)) + f(t * h);
+					
+			m.push_back(m[t]+ h *(a(t * h) * m[t] + b(t * h) * n[t]- otr_part * vec_r[t]));
 
-			m.push_back(m[t]
-				+ h *
-				(
-					a(t * h) * m[t] + b(t * h) * n[t]
-					- otr_part * vec_r[t]
-				));
-
-			n.push_back(n[t]
-				+ h *
-				(
-					c(t * h) * m[t] + d(t * h) * n[t] + f(t * h)
-					- otr_part * vec_s[t]
-				));
+			n.push_back(n[t]+ h * (c(t * h) * m[t] + d(t * h) * n[t] + f(t * h) - otr_part * vec_s[t]));
+				
 		}
 	}
 	ans_m_n.push_back(m);
@@ -188,9 +177,8 @@ vector<vector<double>> vec_u(double h, vector<double> m, vector<double> n, vecto
 			else
 			{
 				double T = (i - 1) * h;
-				double du = -(m[j] * (a3 * a(T) + a4 * c(T))
-							+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) 
-							* p[i - 1][j];
+				double du = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * p[i - 1][j];
+							
 				temp.push_back(ans_u[i - 1][j] + h * du);
 			}
 		}
@@ -213,9 +201,8 @@ vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vecto
 			else
 			{
 				double T = (i - 1) * h;
-				double dv = -(m[j] * (a3 * a(T) + a4 * c(T))
-							+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) 
-							* q[i - 1][j];
+				double dv = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * q[i - 1][j];
+							
 				temp.push_back(v[i - 1][j] + h * dv);
 			}
 		}
@@ -264,16 +251,21 @@ double TrueAnswer(double t)
 double ErrorCount(double h)
 {
 	double err = 0;
-	vector<vector<double>>  rs = vec_r_s(h);
-	vector<double> r = rs[0], s = rs[1];
+	//vector<vector<double>>  rs = vec_r_s(h);
+
+	vector<double> r = vec_r_s(h)[0], s = vec_r_s(h)[1];
+
 	//PrintVector(r);
 	//PrintVector(s);
+
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
-	vector< vector<double>> mn = vec_m_n(h, r, s);
-	vector<double> m = mn[0], n = mn[1];
+
+	vector<double> m = vec_m_n(h, r, s)[0], n = vec_m_n(h, r, s)[1];
+
 	vector<vector<double>> u = vec_u(h, m, n, p);
-	vector<vector<double>> v = vec_v(h, m, n, q);
+	//vector<vector<double>> v = vec_v(h, m, n, q);
+	
 	//PrintMatrix(u);
 	//PrintMatrix(p);
 	
