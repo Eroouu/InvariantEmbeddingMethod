@@ -89,8 +89,8 @@ double ds(double t, double r, double s)
 		+ s * (d(t) - a3 * a(t) * r - a4 * c(t) * r)
 		- s * s * (a3 * b(t) + a4 * d(t));
 }
-double dp(int t, int T, double h, vector<double> vec_r, vector<double> vec_s);
-double dq(int t, int T, double h, vector<double> vec_r, vector<double> vec_s);
+double dpq(int t, double h, double r, double s);
+
 vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_s)
 {
 	vector<vector<double>> ans;
@@ -100,21 +100,16 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 		for (int j = 0; j <= i; j++)
 		{
 			if (i == j)
-				temp.push_back(vec_r[find_index(i, l)]);
+				temp.push_back(vec_r[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dp(j, i - 1, h, vec_r, vec_s) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[i-1], vec_s[i-1]) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
 
 	return ans;
 }
-double dp(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
-{
-	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
-	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
-		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
-}
+
 vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_s)
 {
 	vector<vector<double>> ans;
@@ -124,21 +119,22 @@ vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_
 		for (int j = 0; j <= i; j++)
 		{
 			if (i == j)
-				temp.push_back(vec_s[find_index(i, l)]);
+				temp.push_back(vec_s[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dq(j, i-1, h, vec_r, vec_s) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[i - 1], vec_s[i - 1]) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
 
 	return ans;
 }
-double dq(int t, int T, double h, vector<double> vec_r, vector<double> vec_s)
+double dpq(int t, double h, double r, double s)
 {
-	double temps = vec_s[t], tempr = vec_r[t], th = t * h;
-	return -(tempr * (a3 * a(t * h) + a4 * c(t * h))
-		+ temps * (a3 * b(t * h) + a4 * d(t * h)));
+	double th = t * h;
+	return -(r * (a3 * a(th) + a4 * c(th))
+		+ s * (a3 * b(th) + a4 * d(th)));
 }
+
 
 vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> vec_s)
 {
