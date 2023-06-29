@@ -21,84 +21,86 @@ double True_Answer(double x)
     return -(1. / 24) * q * x * x * x * x / EI_x + (1. / 12) * q * x * x * x / EI_x - (1. / 24) * q * x / EI_x;;
 }
 
-double RuK(double l, double p)
+const double a1 = 1;
+const double a2 = 1;
+const double a3 = 1;
+const double a4 = 0;
+double a(double t)
 {
-    double n = 1e5;
-    double h = l / n;
-    double x0, v0, un, u0, vn, k0, k1, k2, k3, g;
-    x0 = 0;
-    un = u0 = 0;
-    vn = v0 = p;
-    for (int i = 0; i < n; i++)
-    {
-        x0 = i * h;
-        k0 = v0 + h * F(x0, l, v0);
-        k1 = v0 + h * F(x0 + h / 2., l, v0 + h * k0 / 2.);
-        k2 = v0 + h * F(x0 + h / 2., l, v0 + h * k1 / 2.);
-        k3 = v0 + h * F(x0 + h, l, v0 + h * k2);
-        un = u0 + (h / 6.) * (k0 + 2. * k1 + 2. * k2 + k3);
-        vn = k0;
-        u0 = un;
-        v0 = vn;
-    }
-
-    return un;
+    return 1;
+}
+double b(double t)
+{
+    return 1;
+}
+double c(double t)
+{
+    return 0;
+}
+double d(double t)
+{
+    return -1;
 }
 
-double Targetting_Method(double l)
+double f(double t)
 {
-    double p1 = 200, p2 = -100;
-    double p;
-    while (abs(RuK(l, p1)) > 1e-12)
-    {
-        //cout << RuK(l, p1) << " " << p1 << endl;
-        p = (p2 + p1) / 2.;
-        if (RuK(l, p1) * RuK(l, p) < 0)
-            p2 = p;
-        else if (RuK(l, p) * RuK(l, p2) < 0)
-            p1 = p;
-    }
-    cout << "p is: " << p1 << endl;
-    return p1;
+    return 1;
 }
+double f1(double t, double r, double s)
+{
+    return b(t) * s
+        + r * (a(t) - a3 * b(t) * s - a4 * d(t) * s)
+        - r * r * (a3 * a(t) + a4 * c(t));
+}
+double f2(double t, double r, double s)
+{
+    return c(t) * r
+        + s * (d(t) - a3 * a(t) * r - a4 * c(t) * r)
+        - s * s * (a3 * b(t) + a4 * d(t));
+}
+
+vector<vector<double>> RK(double l)
+{
+    int N = 2;
+    double h = 0.05;
+    double k1, k2, k3, k4,
+        l1, l2, l3, l4;
+    vector<double> r, s;
+    vector<vector<double>> rs;
+    r.push_back(a2 / (a3 * a2 - a1 * a4));
+    s.push_back(- a1 / (a3 * a2 - a1 * a4));
+
+    for (int i = 0; i < l / h + 1; i++)
+    {
+        k1 = f1(h * i, r[i], s[i]);
+        l1 = f2(h * i, r[i], s[i]);
+        k2 = f1(h * i + h / 2, r[i] + h * k1 / 2, s[i] + h * l1 / 2);
+        l2 = f2(h * i + h / 2, r[i] + h * k1 / 2, s[i] + h * l1 / 2);
+        k3 = f1(h * i + h / 2, r[i] + h * k2 / 2, s[i] + h * l2 / 2);
+        l3 = f2(h * i + h / 2, r[i] + h * k2 / 2, s[i] + h * l2 / 2);
+        k4 = f1(h * i + h, r[i] + h * k3, s[i] + h * l3);
+        l4 = f2(h * i + h, r[i] + h * k3, s[i] + h * l3);
+
+        r.push_back(r[i] + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6);
+        s.push_back(r[i] + h * (l1 + 2 * l2 + 2 * l3 + l4) / 6);
+    }
+    rs.push_back(r);
+    rs.push_back(s);
+    return rs;
+}
+
 
 
 
 int main()
 {
-    int k;
-    double p = Targetting_Method(1.);
-    double k0, k1, k2, k3;
-    double n = 1e3;
-    double h = 1e-3;
-    double x0, v0, un, u0, vn, l = 1., m = 0, ind_max_razn = 0;
-    x0 = 0;
-    un = u0 = 0;
-    v0 = p;
-    for (int i = 0; i <= n; i++)
+    double l = 1;
+    double h = 0.05;
+    vector<vector<double>> rs = RK(l);
+    for (int i = 0; i < l / h + 1; i++)
     {
-        x0 = i * h;
-        k0 = v0 + h * F(x0, l, v0);
-        k1 = v0 + h * F(x0 + h / 2., l, v0 + h * k0 / 2.);
-        k2 = v0 + h * F(x0 + h / 2., l, v0 + h * k1 / 2.);
-        k3 = v0 + h * F(x0 + h, l, v0 + h * k2);
-        un = u0 + (h / 6.) * (k0 + 2. * k1 + 2. * k2 + k3);
-        vn = k0;
-        if (abs(un - True_Answer(i * h)) > m)
-        {
-            m = abs(un - True_Answer(i * h));
-            ind_max_razn = i;
-        }
-        //cout << x0 << " " << u0 << " " << abs(un - True_Answer(i * h)) <<  endl;
-        u0 = un;
-        v0 = vn;
-        
+        cout << rs[0][i] << "\t" << rs[1][i] <<endl;
     }
-
-    cout << "Max error is: " << m << " X is: " << ind_max_razn * h << endl;
-    cout << "Parameter is: " << p << "; h is " << h << endl;
-    cout << "runtime = " << clock() / 1000.0 << endl;
-    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
