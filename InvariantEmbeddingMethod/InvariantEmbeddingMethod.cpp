@@ -50,8 +50,8 @@ int find_index(double l, double h)
 	}
 	return i;
 }
-double dr(double i, double h, vector<double> vec_r, vector<double> vec_s);
-double ds(double i, double h, vector<double> vec_r, vector<double> vec_s);
+double dr(double t, double r, double s);
+double ds(double t, double r, double s);
 
 vector<vector<double>> vec_r_s(double h) // l is first, z is second
 {
@@ -65,8 +65,9 @@ vector<vector<double>> vec_r_s(double h) // l is first, z is second
 		}
 		else
 		{
-			ans_r.push_back(ans_r[i - 1] + h * dr(i - 1, h, ans_r, ans_s));
-			ans_s.push_back(ans_s[i - 1] + h * ds(i - 1, h, ans_r, ans_s));
+			ans_r.push_back(ans_r[i - 1] + h * dr((i - 1) * h, ans_r[i - 1], ans_s[i - 1]));
+			//cout << dr(i - 1, h, ans_r, ans_s) << endl;
+			ans_s.push_back(ans_s[i - 1] + h * ds((i - 1) * h, ans_r[i - 1], ans_s[i - 1]));
 		}
 
 	}
@@ -75,17 +76,18 @@ vector<vector<double>> vec_r_s(double h) // l is first, z is second
 	rez.push_back(ans_s);
 	return rez;
 }
-double dr(double i, double h,  vector<double> vec_r, vector<double> vec_s)
+double dr(double t,  double r, double s)
 {
-	double temps = vec_s[i], tempr = vec_r[i], t = i * h;
-	return b(t) * temps + tempr * (a(t) - a3 * b(t) * temps - a4 * d(t) * temps)
-		- tempr * tempr * (a3 * a(t) + a4 * c(t));
+	cout << b(t) * s << " | " << r * (a(t) - a3 * b(t) * s - a4 * d(t) * s) << " | " << -r * r * (a3 * a(t) + a4 * c(t)) << endl;
+	return b(t) * s
+		+ r * (a(t) - a3 * b(t) * s - a4 * d(t) * s)
+		- r * r * (a3 * a(t) + a4 * c(t));
 }
-double ds(double i, double h, vector<double> vec_r, vector<double> vec_s)
+double ds(double t, double r, double s)
 {
-	double temps = vec_s[i], tempr = vec_r[i],t = i * h;
-	return c(t) * tempr + temps * (d(t) - a3 * a(t) * tempr - a4 * c(t) * tempr)
-		- temps * temps * (a3 * b(t) + a4 * d(t));
+	return c(t) * r 
+		+ s * (d(t) - a3 * a(t) * r - a4 * c(t) * r)
+		- s * s * (a3 * b(t) + a4 * d(t));
 }
 double dp(int t, int T, double h, vector<double> vec_r, vector<double> vec_s);
 double dq(int t, int T, double h, vector<double> vec_r, vector<double> vec_s);
@@ -234,7 +236,7 @@ void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 	}
 	cout << endl;
 }
-void PrintVector(vector<vector<double>> matrix)
+void PrintMatrix(vector<vector<double>> matrix)
 {
 	cout << "--------------------------------------" << endl;
 	for (int i = 0; i < matrix.size(); i++)
@@ -247,50 +249,68 @@ void PrintVector(vector<vector<double>> matrix)
 	}
 	cout << "--------------------------------------" << endl;
 }
+void PrintVector(vector<double> matrix)
+{
+	cout << "--------------------------------------" << endl;
+
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		cout << matrix[i] << "  ";
+	}
+	cout << endl;
+	
+	cout << "--------------------------------------" << endl;
+}
+double TrueAnswer(double h)
+{
+	return exp(1) * exp(-h) + h - 1;
+}
 double ErrorCount(double h)
 {
 	double err = 0;
 	vector<vector<double>>  rs = vec_r_s(h);
 	vector<double> r = rs[0], s = rs[1];
+	PrintVector(r);
+	PrintVector(s);
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
 	vector< vector<double>> mn = vec_m_n(h, r, s);
 	vector<double> m = mn[0], n = mn[1];
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
-	PrintVector(u);
-	PrintVector(p);
+	//PrintMatrix(u);
+	//PrintMatrix(p);
 	vector<double> x;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
 		x.push_back(u[u.size() - 1][i] + p[p.size() - 1][i]);
 	}
-
+	double koord = 0;
 	cout << "Y   TrueY  currErr\n";
-	/*for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
-		double temp_otv = y[find_index(x, h)];
-		if (abs(temp_otv - RightAns(x))>err)
+		double temp_otv = x[i];
+		if (abs(temp_otv - TrueAnswer(koord))>err)
 		{
-			err = abs(temp_otv - RightAns(x));
+			err = abs(temp_otv - TrueAnswer(koord));
 		}
-		cout << temp_otv << "  " << RightAns(x) << "  " << abs(temp_otv - RightAns(x)) << endl;
-		x += h;
-	}*/
-
+		//cout << temp_otv << "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
+		koord += h;
+	}
+	/*
 	double koord = 0;
 	for (int i = 0; i < 1 / h + 1; i++)
 	{
 		cout << x[i] << "  " << endl;
 		koord += h;
-	}
+	}*/
 	return err;
 }
 int main()
 {
 	//EilerMeth(0.01);
 	double h = 0.05;
-	cout << " Maksim lox " << endl;
+	cout << " Maxim lox " << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
 	return 0;
