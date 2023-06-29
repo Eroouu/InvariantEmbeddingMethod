@@ -246,7 +246,7 @@ void PrintVector(vector<double> matrix)
 }
 double TrueAnswer(double t)
 {
-	return 2 * exp(2*t) / (5 * exp(2) - 3) - t/2 - (-9 + 5* exp(2))/ (5 * exp(2) - 3);
+	return 2 * exp(2*t) / (5 * exp(2) - 3) - t/2 - (-9 + 5 * exp(2))/ (5 * exp(2) - 3);
 }
 double ErrorCount(double h)
 {
@@ -299,7 +299,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.01;
+	double h = 0.1;
 	cout << " Maxim lox " << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
