@@ -100,7 +100,7 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_r[find_index(i, l)]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dp(j, i, h, vec_r, vec_s) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dp(j, i - 1, h, vec_r, vec_s) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
@@ -124,7 +124,7 @@ vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_s[find_index(i, l)]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dq(j, i, h, vec_r, vec_s) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dq(j, i-1, h, vec_r, vec_s) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
@@ -151,23 +151,26 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 		}
 		else
 		{
-			double otr_part = temp_m[i - 1] * (a3 * a(i * h) + a4 * c(i * h)) +
-				temp_n[i - 1] * (a3 * b(i * h) + a4 * d(i * h))
-				+ f(i * h);
-			temp_m.push_back(temp_m[i - 1]
+			double t = i - 1;
+			double otr_part = temp_m[t] * (a3 * a(t * h) + a4 * c(t * h)) +
+				temp_n[t] * (a3 * b(t * h) + a4 * d(t * h))
+				+ f(t * h);
+
+			temp_m.push_back(temp_m[t]
 				+ h *
 				(
-					a(i * h) * temp_m[i - 1] + b(i * h) * temp_n[i - 1]
-					- otr_part * vec_r[i]
-					)
-				* temp_m[i - 1]);
-			temp_n.push_back(temp_n[i - 1]
+					a(t * h) * temp_m[t] + b(t * h) * temp_n[t]
+					- otr_part * vec_r[t]
+				)
+				* temp_m[t]);
+
+			temp_n.push_back(temp_n[t]
 				+ h *
 				(
-					c(i * h) * temp_m[i - 1] + d(i * h) * temp_n[i - 1] + f(i * h)
-					- otr_part * vec_s[i]
-					)
-				* temp_m[i - 1]);
+					c(t * h) * temp_m[t] + d(t * h) * temp_n[t] + f(t * h)
+					- otr_part * vec_s[t]
+				)
+				* temp_n[t]);
 		}
 	}
 	ans_m_n.push_back(temp_m);
@@ -231,6 +234,19 @@ void tempOutput(vector<vector<double>> y1, vector<vector<double>> y2, double h)
 	}
 	cout << endl;
 }
+void PrintVector(vector<vector<double>> matrix)
+{
+	cout << "--------------------------------------" << endl;
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		for (int j = 0; j < matrix[i].size(); j++)
+		{
+			cout << matrix[i][j] << "  ";
+		}
+		cout << endl;
+	}
+	cout << "--------------------------------------" << endl;
+}
 double ErrorCount(double h)
 {
 	double err = 0;
@@ -242,7 +258,8 @@ double ErrorCount(double h)
 	vector<double> m = mn[0], n = mn[1];
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
-
+	PrintVector(u);
+	PrintVector(p);
 	vector<double> x;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
