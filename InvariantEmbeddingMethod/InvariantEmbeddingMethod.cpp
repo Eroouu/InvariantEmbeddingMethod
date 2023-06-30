@@ -41,15 +41,6 @@ namespace m752
 
 using namespace m752;
 
-int find_index(double l, double h)
-{
-	int i = 0;
-	while (abs(i - l / h) > 1e-5)
-	{
-		i++;
-	}
-	return i;
-}
 double dr(double t, double r, double s);
 double ds(double t, double r, double s);
 
