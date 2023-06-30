@@ -132,7 +132,7 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_r[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[i-1], vec_s[i-1]) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[j], vec_s[j]) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
@@ -151,7 +151,7 @@ vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_s[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[i - 1], vec_s[i - 1]) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[j], vec_s[j]) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
