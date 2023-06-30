@@ -5,7 +5,7 @@ class Base
 {
 public:
 	Base();
-	Base(double q, double l, double h, double bc_l, double bc_r);
+	Base(double q, double l, double h);
 	void set_s();
 	void set_a();
 	void set_y();
@@ -24,8 +24,6 @@ protected:
 	double l;
 	double h;
 	double q;
-	double bc_l;
-	double bc_r;
 
 private:
 	vector<double> vec_s;

@@ -6,17 +6,13 @@ Base::Base()
 	q = 0;
 	h = 0.05;
 	l = 1;
-	bc_l = 0;
-	bc_r = 0;
 }
 
-Base::Base(double q, double l, double h, double bc_l, double bc_r)
+Base::Base(double q, double l, double h)
 {
 	this->q = q;
 	this->l = l;
 	this->h = h;
-	this->bc_l = bc_l;
-	this->bc_r = bc_r;
 }
 
 void Base::set_s()
@@ -66,9 +62,9 @@ void Base::set_y()
 		for (int j = 0; j < i + 1; j++) // для x меньшего чем l
 		{
 			if (j == 0)
-				temp.push_back(bc_l);
+				temp.push_back(0);
 			else if (j == i)
-				temp.push_back(bc_r);
+				temp.push_back(0);
 			else
 			{
 				temp.push_back(vec_y[i - 1][j] - h * vec_s[find_index((i - 1) * h, h)] * vec_a[find_index((i - 1) * h, h)][find_index(j * h, h)]); // y_l removed

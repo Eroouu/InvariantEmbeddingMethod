@@ -130,11 +130,13 @@
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="InvariantEmbeddingMethod.cpp" />
+    <ClCompile Include="Plate.cpp" />
     <ClCompile Include="TargettingMethod.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
     <ClInclude Include="Bridge.h" />
+    <ClInclude Include="Plate.h" />
     <ClInclude Include="TargettingMethod.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -6,7 +6,7 @@ class Bridge : public Base
 {
 public:
 	Bridge();
-	Bridge(double q_con, double EI_x, double q, double l, double h, double bc_l, double bc_r);
+	Bridge(double q_con, double EI_x, double q, double l, double h);
 	double r(double x);
 	double p(double x);
 	double TrueY(double x);
