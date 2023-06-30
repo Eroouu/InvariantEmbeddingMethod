@@ -299,8 +299,8 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.1;
-	cout << " Maxim lox " << endl;
+	double h = 0.01;
+	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
 	return 0;
