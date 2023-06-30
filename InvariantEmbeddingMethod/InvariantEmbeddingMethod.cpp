@@ -19,7 +19,7 @@ namespace m752
 	const double a4 = 1.5;
 	double a(double t)
 	{
-		return 2;
+		return 1;
 	}
 	double b(double t)
 	{
@@ -31,7 +31,7 @@ namespace m752
 	}
 	double d(double t)
 	{
-		return -1;
+		return 1;
 	}
 	double f(double t)
 	{
@@ -196,7 +196,7 @@ vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vecto
 		{
 			if (i == j)
 			{
-				temp.push_back(m[i]);
+				temp.push_back(n[i]);
 			}
 			else
 			{
@@ -268,8 +268,8 @@ double ErrorCount(double h)
 	vector<double> x,y;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
-		x.push_back(u[u.size() - 1][i] - p[p.size() - 1][i]);
-		y.push_back(v[v.size() - 1][i] - q[q.size() - 1][i]);
+		x.push_back(u[u.size() - 1][i] + p[p.size() - 1][i]);
+		y.push_back(v[v.size() - 1][i] + q[q.size() - 1][i]);
 	}
 	//PrintVector(x);
 	double koord = 0;
@@ -313,7 +313,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.05;
+	double h = 0.01;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
