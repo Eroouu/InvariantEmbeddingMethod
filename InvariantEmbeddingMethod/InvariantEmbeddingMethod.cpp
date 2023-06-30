@@ -19,7 +19,7 @@ namespace m752
 	const double a4 = 1.5;
 	double a(double t)
 	{
-		return 1;
+		return 2;
 	}
 	double b(double t)
 	{
@@ -255,8 +255,8 @@ double ErrorCount(double h)
 
 	vector<double> r = vec_r_s(h)[0], s = vec_r_s(h)[1];
 
-	//PrintVector(r);
-	//PrintVector(s);
+	PrintVector(r);
+	PrintVector(s);
 
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
