@@ -236,9 +236,13 @@ void PrintVector(vector<double> matrix)
 	
 	cout << "--------------------------------------" << endl;
 }
-double TrueAnswer(double t)
+double TrueAnswerX(double t)
 {
 	return 2 * exp(2*t) / (5 * exp(2) - 3) - t/2 - (-9 + 5 * exp(2))/ (5 * exp(2) - 3);
+}
+double TrueAnswerY(double t)
+{
+	return 2 * exp(2 * t) / (5 * exp(2) - 3) + t / 2 + (-9 + 5 * exp(2)) / (5 * exp(2) - 3)-1./2;
 }
 double ErrorCount(double h)
 {
@@ -247,8 +251,8 @@ double ErrorCount(double h)
 
 	vector<double> r = vec_r_s(h)[0], s = vec_r_s(h)[1];
 
-	PrintVector(r);
-	PrintVector(s);
+	//PrintVector(r);
+	//PrintVector(s);
 
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
@@ -256,15 +260,16 @@ double ErrorCount(double h)
 	vector<double> m = vec_m_n(h, r, s)[0], n = vec_m_n(h, r, s)[1];
 
 	vector<vector<double>> u = vec_u(h, m, n, p);
-	//vector<vector<double>> v = vec_v(h, m, n, q);
+	vector<vector<double>> v = vec_v(h, m, n, q);
 	
 	//PrintMatrix(u);
 	//PrintMatrix(p);
 	
-	vector<double> x;
+	vector<double> x,y;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
 		x.push_back(u[u.size() - 1][i] - p[p.size() - 1][i]);
+		y.push_back(v[v.size() - 1][i] - q[q.size() - 1][i]);
 	}
 	//PrintVector(x);
 	double koord = 0;
@@ -272,14 +277,30 @@ double ErrorCount(double h)
 	for (int i = 0; i < l / h + 1; i++)
 	{
 		double temp_otv = x[i];
-		if (abs(temp_otv - TrueAnswer(koord))>err)
+		if (abs(temp_otv - TrueAnswerX(koord))>err)
 		{
-			err = abs(temp_otv - TrueAnswer(koord));
+			err = abs(temp_otv - TrueAnswerX(koord));
 		}
 		cout << u[u.size() - 1][i] <<"   "<< +p[p.size() - 1][i] <<"   "<< temp_otv 
-			<< "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
+			<< "  " << TrueAnswerX(koord) << "  " << abs(temp_otv - TrueAnswerX(koord)) << endl;
 		koord += h;
 	}
+	koord = 0;
+	double errY = 0;
+	cout << "\n\n";
+	cout << "V            Q          Y           TrueY       currErr\n";
+	for (int i = 0; i < l / h + 1; i++)
+	{
+		double temp_otv = y[i];
+		if (abs(temp_otv - TrueAnswerY(koord)) > errY)
+		{
+			errY = abs(temp_otv - TrueAnswerY(koord));
+		}
+		cout << v[v.size() - 1][i] << "   " << +q[q.size() - 1][i] << "   " << temp_otv
+			<< "  " << TrueAnswerY(koord) << "  " << abs(temp_otv - TrueAnswerY(koord)) << endl;
+		koord += h;
+	}
+	cout << "Y's Error is: " << errY << endl;
 	/*
 	double koord = 0;
 	for (int i = 0; i < 1 / h + 1; i++)
@@ -292,7 +313,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.005;
+	double h = 0.05;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
