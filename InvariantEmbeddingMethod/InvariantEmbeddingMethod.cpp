@@ -252,8 +252,8 @@ double ErrorCount(double h)
 	vector< vector<double>> q = vec_q(h, r, s);
 
 	vector<double> m = vec_m_n(h, r, s)[0], n = vec_m_n(h, r, s)[1];
-	PrintVector(m);
-	PrintVector(n);
+	//PrintVector(m);
+	//PrintVector(n);
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
 	
@@ -283,7 +283,7 @@ double ErrorCount(double h)
 	koord = 0;
 	double errY = 0;
 	cout << "\n\n";
-	cout << "V            Q          Y           TrueY       currErr\n";
+	/*cout << "V            Q          Y           TrueY       currErr\n";
 	for (int i = 0; i < l / (h) + 1; i++)
 	{
 		double temp_otv = y[i];
@@ -295,7 +295,7 @@ double ErrorCount(double h)
 			<< "  " << TrueAnswerY(koord) << "  " << abs(temp_otv - TrueAnswerY(koord)) << endl;
 		koord += h;
 	}
-	cout << "Y's Error is: " << errY << endl;
+	cout << "Y's Error is: " << errY << endl;*/
 	/*
 	double koord = 0;
 	for (int i = 0; i < 1 / h + 1; i++)
@@ -308,7 +308,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.1;
+	double h = 1e-3;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
