@@ -10,6 +10,7 @@
 #include "Plate.h"
 #include "TargettingMethod.h"
 #include <ctime>
+#include "PlateX.h"
 using namespace std;
 
 void BridgeMethod(double q_con, double EI_x, double q,double l, double h)
@@ -35,6 +36,26 @@ void BridgeMethod(double q_con, double EI_x, double q,double l, double h)
 void PlateMethod(double q_v, double lambda, double q, double l, double h)
 {
     Plate sol1(q_v, lambda, q, l, h);
+    sol1.set_all();
+    vector<double> y = sol1.get_ans();
+    double err = 0, x = 0;
+    //sol1.debug();
+    cout << "Y   TrueY  currErr\n";
+    for (int i = 0; i < l / h + 1; i++)
+    {
+        double temp_otv = y[i];
+        if (abs(temp_otv - sol1.TrueY(x)) > err)
+        {
+            err = abs(temp_otv - sol1.TrueY(x));
+        }
+        cout << temp_otv << "  " << sol1.TrueY(x) << "  " << abs(temp_otv - sol1.TrueY(x)) << endl;
+        x += h;
+    }
+    cout << "Error is: " << err << " h is: " << h << endl;
+}
+void PlateXMethod(double lambda, double q, double l, double h)
+{
+    PlateX sol1(0, lambda, q, l, h);
     sol1.set_all();
     vector<double> y = sol1.get_ans();
     double err = 0, x = 0;
@@ -94,6 +115,7 @@ int main()
     double start_time1 = clock();
     //BridgeMethod(q_con, EI_x, 0, l,h);
     PlateMethod(q_v, lambda, 0, l, h);
+    PlateXMethod(lambda, 0, l, h);
     double end_time1 = clock();
     cout << "runtime of InvEmbedding = " << (end_time1-start_time1) / 1000.0 << endl;
     //RungeMethod(1., 1., 0 ,l,h);
