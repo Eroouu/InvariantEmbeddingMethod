@@ -12,7 +12,7 @@ using namespace std;
 
 namespace m752
 {
-	const double l = 1;
+	const double l = 2;
 	const double a1 = 1;
 	const double a2 = 2;
 	const double a3 = 1;
@@ -47,7 +47,7 @@ double ds(double t, double r, double s);
 vector<vector<double>> vec_r_s(double h) // l is first, z is second
 {
 	vector<double> ans_r, ans_s;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		if (i == 0)
 		{
@@ -85,8 +85,8 @@ double dpq(int t, double h, double r, double s);
 vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_s)
 {
 	vector<vector<double>> ans;
-	for (int i = 0; i < 1 / h + 1; i++)
-	{
+	for (int i = 0; i < l / h + 1; i++)
+	{	
 		vector<double> temp;
 		for (int j = 0; j <= i; j++)
 		{
@@ -104,7 +104,7 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_s)
 {
 	vector<vector<double>> ans;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		vector<double> temp;
 		for (int j = 0; j <= i; j++)
@@ -131,7 +131,7 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 {
 	vector<vector<double>> ans_m_n;
 	vector<double> n, m;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		if (i == 0)
 		{
@@ -156,7 +156,7 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 vector<vector<double>> vec_u(double h, vector<double> m, vector<double> n, vector<vector<double>> p)
 {
 	vector<vector<double>> ans_u;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		vector<double> temp;
 		for (int j = 0; j <= i; j++)
@@ -168,7 +168,7 @@ vector<vector<double>> vec_u(double h, vector<double> m, vector<double> n, vecto
 			else
 			{
 				double T = (i - 1) * h;
-				double du = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * p[i - 1][j];
+				double du = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * p[i-1][j];
 							
 				temp.push_back(ans_u[i - 1][j] + h * du);
 			}
@@ -180,7 +180,7 @@ vector<vector<double>> vec_u(double h, vector<double> m, vector<double> n, vecto
 vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vector<vector<double>> q)
 {
 	vector<vector<double>> v;
-	for (int i = 0; i < 1 / h + 1; i++)
+	for (int i = 0; i < l / h + 1; i++)
 	{
 		vector<double> temp;
 		for (int j = 0; j <= i; j++)
@@ -192,7 +192,7 @@ vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vecto
 			else
 			{
 				double T = (i - 1) * h;
-				double dv = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * q[i - 1][j];
+				double dv = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * q[i-1][j];
 							
 				temp.push_back(v[i - 1][j] + h * dv);
 			}
@@ -229,11 +229,11 @@ void PrintVector(vector<double> matrix)
 }
 double TrueAnswerX(double t)
 {
-	return 2 * exp(2*t) / (5 * exp(2) - 3) - t/2 - (-9 + 5 * exp(2))/ (5 * exp(2) - 3);
+	return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) - t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3));
 }
 double TrueAnswerY(double t)
 {
-	return 2 * exp(2 * t) / (5 * exp(2) - 3) + t / 2 + (-9 + 5 * exp(2)) / (5 * exp(2) - 3)-1./2;
+	return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) + t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2;
 }
 double ErrorCount(double h)
 {
@@ -265,7 +265,7 @@ double ErrorCount(double h)
 	//PrintVector(x);
 	double koord = 0;
 	cout << "U            P          X           TrueX       currErr\n";
-	for (int i = 0; i < l / h + 1; i++)
+	for (int i = 0; i < l /(h) + 1; i++)
 	{
 		double temp_otv = x[i];
 		if (abs(temp_otv - TrueAnswerX(koord))>err)
@@ -280,7 +280,7 @@ double ErrorCount(double h)
 	double errY = 0;
 	cout << "\n\n";
 	cout << "V            Q          Y           TrueY       currErr\n";
-	for (int i = 0; i < l / h + 1; i++)
+	for (int i = 0; i < l / (h) + 1; i++)
 	{
 		double temp_otv = y[i];
 		if (abs(temp_otv - TrueAnswerY(koord)) > errY)
