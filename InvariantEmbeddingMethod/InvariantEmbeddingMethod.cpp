@@ -12,7 +12,7 @@ using namespace std;
 
 namespace m752
 {
-	const double l = 2;
+	const double l = 1;
 	const double a1 = 1;
 	const double a2 = 2;
 	const double a3 = 1;
@@ -93,7 +93,7 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_r[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[j], vec_s[j]) * ans[i - 1][j]);
+				temp.push_back(ans[i-1][j] +  h*dpq( i - 1, h, vec_r[j], vec_s[j]) * ans[i-1][j]);
 		}
 		ans.push_back(temp);
 	}
@@ -156,20 +156,23 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 vector<vector<double>> vec_u(double h, vector<double> m, vector<double> n, vector<vector<double>> p)
 {
 	vector<vector<double>> ans_u;
+	//cout << "Du debug :" << endl;
 	for (int i = 0; i < l / h + 1; i++)
 	{
 		vector<double> temp;
+		//cout << "I index:" << i << endl;
 		for (int j = 0; j <= i; j++)
 		{
 			if (i == j)
 			{
 				temp.push_back(m[i]);
+
 			}
 			else
 			{
 				double T = (i - 1) * h;
 				double du = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * p[i-1][j];
-							
+				//cout << du << endl;
 				temp.push_back(ans_u[i - 1][j] + h * du);
 			}
 		}
@@ -249,7 +252,8 @@ double ErrorCount(double h)
 	vector< vector<double>> q = vec_q(h, r, s);
 
 	vector<double> m = vec_m_n(h, r, s)[0], n = vec_m_n(h, r, s)[1];
-
+	PrintVector(m);
+	PrintVector(n);
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
 	
@@ -304,7 +308,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.01;
+	double h = 0.1;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
