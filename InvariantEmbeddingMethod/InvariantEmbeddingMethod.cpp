@@ -102,11 +102,10 @@ vector<vector<double>> vec_p(double h, vector<double> vec_r, vector<double> vec_
 			if (i == j)
 				temp.push_back(vec_r[i]);
 			else
-				temp.push_back(ans[i - 1][j] + h * dpq( i - 1, h, vec_r[j], vec_s[j]) * ans[i - 1][j]);
+				temp.push_back(ans[i - 1][j] + h * dpq(i - 1, h, vec_r[j], vec_s[j]) * ans[i - 1][j]);
 		}
 		ans.push_back(temp);
 	}
-
 	return ans;
 }
 
@@ -125,7 +124,6 @@ vector<vector<double>> vec_q(double h, vector<double> vec_r, vector<double> vec_
 		}
 		ans.push_back(temp);
 	}
-
 	return ans;
 }
 double dpq(int t, double h, double r, double s)
@@ -152,7 +150,7 @@ vector<vector<double>> vec_m_n(double h, vector<double> vec_r, vector<double> ve
 			double t = i - 1;
 			double otr_part = m[t] * (a3 * a(t * h) + a4 * c(t * h)) + n[t] * (a3 * b(t * h) + a4 * d(t * h)) + f(t * h);
 					
-			m.push_back(m[t]+ h *(a(t * h) * m[t] + b(t * h) * n[t] - otr_part * vec_r[t]));
+			m.push_back(m[t]+ h * (a(t * h) * m[t] + b(t * h) * n[t] - otr_part * vec_r[t]));
 
 			n.push_back(n[t]+ h * (c(t * h) * m[t] + d(t * h) * n[t] + f(t * h) - otr_part * vec_s[t]));
 				
@@ -196,7 +194,7 @@ vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vecto
 		{
 			if (i == j)
 			{
-				temp.push_back(m[i]);
+				temp.push_back(n[i]);
 			}
 			else
 			{
@@ -276,7 +274,7 @@ double ErrorCount(double h)
 		{
 			err = abs(temp_otv - TrueAnswer(koord));
 		}
-		cout << u[u.size() - 1][i] <<"   "<< +p[p.size() - 1][i] <<"   "<< temp_otv 
+		cout << u[u.size() - 1][i] <<"   "<< p[p.size() - 1][i] <<"   "<< temp_otv 
 			<< "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
 		koord += h;
 	}
