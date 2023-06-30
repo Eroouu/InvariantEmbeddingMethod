@@ -302,11 +302,11 @@ double ErrorCount(double h)
 	vector<double> x;
 	for (int i = 0; i < u[u.size() - 1].size(); i++)
 	{
-		x.push_back(u[u.size() - 1][i] + p[p.size() - 1][i]);
+		x.push_back(u[u.size() - 1][i] -p[p.size() - 1][i]);
 	}
 	//PrintVector(x);
 	double koord = 0;
-	cout << "Y   TrueY  currErr\n";
+	cout << "U            P          X           TrueX       currErr\n";
 	for (int i = 0; i < l / h + 1; i++)
 	{
 		double temp_otv = x[i];
@@ -314,7 +314,8 @@ double ErrorCount(double h)
 		{
 			err = abs(temp_otv - TrueAnswer(koord));
 		}
-		cout << temp_otv << "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
+		cout << u[u.size() - 1][i] <<"   "<< +p[p.size() - 1][i] <<"   "<< temp_otv 
+			<< "  " << TrueAnswer(koord) << "  " << abs(temp_otv - TrueAnswer(koord)) << endl;
 		koord += h;
 	}
 	/*
@@ -329,7 +330,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 0.01;
+	double h = 0.005;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
