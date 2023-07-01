@@ -20,12 +20,41 @@ namespace m751
 	double a = 0, c = 0;
 }
 using namespace m751;
-double r(double a, double c,double delta)
+
+vector<vector<double>> vec_r(double h) // Inverted array of all a_i of (array of elements where we find one r(a+h,c_j) for all c_j)
 {
-	if (a == 0)
-		return 0;
-	else
-		return r(a + delta, c + r(a + delta, c, delta) * delta, delta) - delta * g(c, r(a, c, delta), a);
+	vector<vector<double>> ans;
+	double a = 1, c = 1;
+	for (int i = 0; i < 1 / h + 1; i++)
+	{
+		vector<double> temp;
+		for (int j = 0; j < 1 / h + 1; j++)
+		{
+			temp.push_back(c + h * g(c, 0, a));
+			c -= h;
+		}
+		ans.push_back(temp);
+		a -= h;
+	}
+	return ans;
+}
+vector<vector<double>> c_dj(vector<vector<double>> r_c,double h)
+{
+
+}
+int find_index(double x,double delta)
+{
+	int i = 0;
+	while (abs(i - x / delta) > 1e-5)
+	{
+		i++;
+	}
+	return i;
+}
+double r(double a, double c,double delta, vector<vector<double>> r_c)
+{
+	int i = find_index(a, delta), j = find_index(c, delta);
+	return r(a + delta, c + r_c[i+1][j] * delta, delta,r_c) - delta * g(c, 0, a);
 }
 double RightAns(double x)
 {
@@ -55,10 +84,10 @@ void Outcmd(vector<double> y, vector<double> u, double h);
 vector<double> EilerMeth(double h)
 {
 	vector<double> y, u;
-	double delta = 0.1;
 	double x = 0;
 	y.push_back(c);
-	u.push_back(r(a, c, delta));
+	vector<vector<double>> r_c = vec_r(h);
+	u.push_back(r(a, c, h,r_c));
 	while (x <= 1)
 	{
 		double tempY, tempU;
