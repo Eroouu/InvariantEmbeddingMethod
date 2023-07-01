@@ -73,6 +73,16 @@ void PlateXMethod(int degree,vector<double> C,double T0,double lambda, double q,
     }
     cout << "Error is: " << err << " h is: " << h << endl;
 }
+vector<double> PolyConstructor(int degree)
+{
+    vector<double> C;
+    double satana = 0.436;
+    for (int i = 0; i <= degree; i++)
+    {
+        C.push_back(satana + 1.25 * i);
+    }
+    return C;
+}
 void TargetMethod(double q_con, double EI_x, double q, double l, double h)
 {
     TargettingMethod sol(q_con, EI_x, l, h);
@@ -107,14 +117,14 @@ void TargetMethod(double q_con, double EI_x, double q, double l, double h)
 int main()
 {
     double h = 1e-2;
-    double l = 1.;
+    double l = 10.;
     double q_con = 1.;
     double EI_x = 1.;
     double q_v = 456700;
     double lambda = 2;
     double T0 = 300;
-    int degree = 10;
-    vector<double> C = { 0,1,2,3,4,5,6,7,8,9,10 };
+    int degree = 3;
+    vector<double> C = PolyConstructor(degree);
     double start_time1 = clock();
     //BridgeMethod(q_con, EI_x, 0, l,h);
     //PlateMethod(T0,q_v, lambda, 0, l, h);
