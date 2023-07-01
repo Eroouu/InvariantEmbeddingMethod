@@ -90,8 +90,9 @@ void Outcmd(vector<double> y, vector<double> u,double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double err =ErrorCount();
-	cout << "Error is: " << err;
+	double h = 0.01;
+	double err =ErrorCount(h);
+	cout << "Error is: " << err <<" h is: "<< h ;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
