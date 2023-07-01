@@ -14,7 +14,7 @@ public:
 	virtual double r(double x);
 	virtual double p(double x);
 	vector<vector<double>> get_y();
-	vector<double> get_ans();
+	virtual vector<double> get_ans();
 	virtual double TrueY(double x);
 	double get_l();
 	double get_h();
@@ -24,12 +24,12 @@ protected:
 	double l;
 	double h;
 	double q;
-
+	
 private:
 	vector<double> vec_s;
 	vector<vector<double>> vec_a;
 	vector<vector<double>> vec_y;
-	vector<double> ans;
+	
 	
 	
 };

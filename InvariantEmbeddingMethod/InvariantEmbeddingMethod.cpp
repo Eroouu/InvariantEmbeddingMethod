@@ -33,9 +33,9 @@ void BridgeMethod(double q_con, double EI_x, double q,double l, double h)
     }
     cout << "Error is: " << err << " h is: " << h<< endl;
 }
-void PlateMethod(double q_v, double lambda, double q, double l, double h)
+void PlateMethod(double T0,double q_v, double lambda, double q, double l, double h)
 {
-    Plate sol1(q_v, lambda, q, l, h);
+    Plate sol1(T0,q_v, lambda, q, l, h);
     sol1.set_all();
     vector<double> y = sol1.get_ans();
     double err = 0, x = 0;
@@ -53,9 +53,9 @@ void PlateMethod(double q_v, double lambda, double q, double l, double h)
     }
     cout << "Error is: " << err << " h is: " << h << endl;
 }
-void PlateXMethod(double lambda, double q, double l, double h)
+void PlateXMethod(double T0,double lambda, double q, double l, double h)
 {
-    PlateX sol1(0, lambda, q, l, h);
+    PlateX sol1(T0, lambda, q, l, h);
     sol1.set_all();
     vector<double> y = sol1.get_ans();
     double err = 0, x = 0;
@@ -110,12 +110,13 @@ int main()
     double l = 1.;
     double q_con = 1.;
     double EI_x = 1.;
-    double q_v = 200;
-    double lambda = 20;
+    double q_v = 456700;
+    double lambda = 2;
+    double T0 = 300;
     double start_time1 = clock();
     //BridgeMethod(q_con, EI_x, 0, l,h);
-    PlateMethod(q_v, lambda, 0, l, h);
-    PlateXMethod(lambda, 0, l, h);
+    PlateMethod(T0,q_v, lambda, 0, l, h);
+    //PlateXMethod(T0,lambda, 0, l, h);
     double end_time1 = clock();
     cout << "runtime of InvEmbedding = " << (end_time1-start_time1) / 1000.0 << endl;
     //RungeMethod(1., 1., 0 ,l,h);

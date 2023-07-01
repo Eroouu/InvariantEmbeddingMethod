@@ -5,7 +5,7 @@ class PlateX :
 {
 public:
     PlateX();
-    PlateX(double q_v, double lambda, double q, double l, double h);
+    PlateX(double T0, double lambda, double q, double l, double h);
     double p(double x);
     double func_q_v(double x);
     double TrueY(double x);

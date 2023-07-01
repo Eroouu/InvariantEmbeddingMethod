@@ -111,7 +111,7 @@ vector<vector<double>> Base::get_y()
 vector<double> Base::get_ans()
 {
 	vector<double> ans;
-	vector<vector<double>> y = this->get_y();
+	vector<vector<double>> y = get_y();
 	for (int i = 0; i < y.size(); i++)
 	{
 		ans.push_back(y[y.size() - 1][i]);
