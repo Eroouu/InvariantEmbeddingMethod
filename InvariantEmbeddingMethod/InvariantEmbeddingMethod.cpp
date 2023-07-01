@@ -12,30 +12,35 @@ using namespace std;
 
 namespace m752
 {
-	const double l = 2;
-	const double a1 = 1;
-	const double a2 = 2;
+	const double l = 1;
+	const double a1 = 0;
+	const double a2 = 1;
 	const double a3 = 1;
-	const double a4 = 1.5;
+	const double a4 = 0;
+	const double q_v = 1.1;
+	const double lambda = 1;
 	double a(double t)
 	{
-		return 1;
+		return 0;
 	}
 	double b(double t)
 	{
 		return 1;
 	}
-	double c(double t)
+	double c(double r)
 	{
-		return 1;
+		return 0;
 	}
-	double d(double t)
+	double d(double r)
 	{
-		return 1;
+		if (r != 0)
+			return -1. / r;
+		else
+			return 0.001;
 	}
 	double f(double t)
 	{
-		return 1;
+		return - q_v/lambda;
 	}
 }
 
@@ -190,7 +195,7 @@ vector<vector<double>> vec_v(double h, vector<double> m, vector<double> n, vecto
 			else
 			{
 				double T = (i - 1) * h;
-				double dv = -(m[j] * (a3 * a(T) + a4 * c(T))+ n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * q[i-1][j];
+				double dv = -(m[j] * (a3 * a(T) + a4 * c(T)) + n[j] * (a3 * b(T) + a4 * d(T)) + f(T)) * q[i-1][j];
 							
 				temp.push_back(v[i - 1][j] + h * dv);
 			}
@@ -225,9 +230,9 @@ void PrintVector(vector<double> matrix)
 	
 	cout << "--------------------------------------" << endl;
 }
-double TrueAnswerX(double t)
+double TrueAnswerX(double x)
 {
-	return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) - t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3));
+	return q_v * l * l / (4 * lambda) * (1 + 2 * lambda / l - x * x / l * l) ;
 }
 double TrueAnswerY(double t)
 {
