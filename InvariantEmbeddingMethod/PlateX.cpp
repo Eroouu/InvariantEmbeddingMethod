@@ -2,10 +2,14 @@
 
 PlateX::PlateX()
 {
+	degree = 2;
+	C={0,0,10};
 }
 
-PlateX::PlateX(double T0, double lambda, double q, double l, double h):Plate(T0,0,lambda,q,l,h)
+PlateX::PlateX(int degree,vector<double> C,double T0, double lambda, double q, double l, double h):Plate(T0,0,lambda,q,l,h)
 {
+	this->degree = degree;
+	this->C = C;
 }
 double PlateX::p(double x)
 {
@@ -13,10 +17,19 @@ double PlateX::p(double x)
 }
 double PlateX::func_q_v(double x)
 {
-	return 10*x*x;
+	double sum = 0;
+	for (int i = 0; i <= degree; i++)
+	{
+		sum+= C[i] * pow(x, i);
+	}	
+	return sum;
 }
 double PlateX::TrueY(double x)
 {
-	//return -q_v * x * x / (2 * lambda) + q_v * l * x / (2 * lambda);
-	return T0-5 * x * x * x * x / (6 * lambda) + 5 * l * l * l * x / (6 * lambda);
+	double sum = 0;
+	for (int i = 0; i <= degree; i++)
+	{
+		sum += -C[i] * pow(x, i + 2) / (lambda * (i + 2) * (i + 1)) + C[i] * x * pow(l, i + 1) / (lambda * (i + 2) * (i + 1));
+	}
+	return T0+sum;
 }
