@@ -13,10 +13,10 @@ using namespace std;
 namespace m752
 {
 	const double l = 1;
-	const double a1 = 1;
-	const double a2 = 2;
-	const double a3 = 1;
-	const double a4 = 1.5;
+	const double a1 = 1.;
+	const double a2 = 0;
+	const double a3 = 1.;
+	const double a4 = 1.;
 	double a(double t)
 	{
 		return 1;
@@ -232,11 +232,21 @@ void PrintVector(vector<double> matrix)
 }
 double TrueAnswerX(double t)
 {
-	return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) - t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3));
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 3 / (4 * exp(2 * l)); //this is for 1,0,1,1 stack of alpha
+	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3))
+		//- t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2 * l) - 3));// this is for 1,2,1,1.5 stack of alpha
+	//return exp(2 * t) / 4 - t / 2 - exp(2 * l) / 4 + l / 2 + 1; // this is for 1,1,1,0
+	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,0
+	return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,1
 }
 double TrueAnswerY(double t)
 {
-	return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) + t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2;
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 + 3 / (4 * exp(2 * l)) -1./2; //this is for 1,0,1,1 stack of alpha
+	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) 
+		//+ t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2; // this is for 1,2,1,1.5 stack of alpha
+	//return exp(2 * t) / 4 + t / 2 + exp(2 * l) / 4 - l / 2 - 3. / 2; // this is for 1,1,1,0
+	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,0
+	return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,1
 }
 double ErrorCount(double h)
 {
@@ -283,7 +293,7 @@ double ErrorCount(double h)
 	koord = 0;
 	double errY = 0;
 	cout << "\n\n";
-	/*cout << "V            Q          Y           TrueY       currErr\n";
+	cout << "V            Q          Y           TrueY       currErr\n";
 	for (int i = 0; i < l / (h) + 1; i++)
 	{
 		double temp_otv = y[i];
@@ -295,7 +305,7 @@ double ErrorCount(double h)
 			<< "  " << TrueAnswerY(koord) << "  " << abs(temp_otv - TrueAnswerY(koord)) << endl;
 		koord += h;
 	}
-	cout << "Y's Error is: " << errY << endl;*/
+	cout << "Y's Error is: " << errY << endl;
 	/*
 	double koord = 0;
 	for (int i = 0; i < 1 / h + 1; i++)
@@ -308,7 +318,7 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 1e-3;
+	double h = 1e-2;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
 	cout << "Error is: " << err << " h is: " << h;
