@@ -17,6 +17,7 @@ namespace m752
 	const double a2 = 1;
 	const double a3 = 1;
 	const double a4 = 1;
+	const double fc = 5;
 	double a(double t)
 	{
 		return 1;
@@ -35,7 +36,7 @@ namespace m752
 	}
 	double f(double t)
 	{
-		return 1;
+		return fc;
 	}
 }
 
@@ -48,9 +49,9 @@ double TrueAnswerX(double t)
 	//return exp(2 * t) / 4 - t / 2 - exp(2 * l) / 4 + l / 2 + 1; // this is for 1,1,1,0
 	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,0
 	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,1
-	double ans = exp(2 * t) * (l * a3 * a1 - a1 * l * a4 - l * a3 * a2 + l * a4 * a2 + a1 * a4 - a2 * a3 + 2 * a1 - 2 * a2) /
-		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - t / 2
-		+ (exp(2 * l) * (a2 * a3 + a2 * a4) - l * a3 * a1 + a1 * l * a4 - l * a3 * a2 + l * a4 * a2 - a1 * a4 - a4 * a2 - a1 - a2) /
+	double ans = exp(2 * t) * (l * a3 * a1*fc - a1 * l * a4*fc - l * a3 * a2*fc + l * a4 * a2*fc + a1 * a4*fc - a2 * a3*fc + 2 * a1 - 2 * a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - fc*t / 2
+		+ (exp(2 * l) *fc* (a2 * a3 + a2 * a4) - l * a3 * a1*fc + a1 * l * a4*fc - l * a3 * a2*fc + l * a4 * a2*fc - a1 * a4*fc - a4 * a2*fc - 2*a1 - 2*a2) /
 		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4));
 	return ans;
 }
@@ -62,10 +63,10 @@ double TrueAnswerY(double t)
 	//return exp(2 * t) / 4 + t / 2 + exp(2 * l) / 4 - l / 2 - 3. / 2; // this is for 1,1,1,0
 	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,0
 	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,1
-	double ans = exp(2 * t) * (l * a3 * a1 - a1 * l * a4 - l * a3 * a2 + l * a4 * a2 + a1 * a4 - a2 * a3 + 2 * a1 - 2 * a2) /
-		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) + t / 2
-		- (exp(2 * l) * (a2 * a3 + a2 * a4) - l * a3 * a1 + a1 * l * a4 - l * a3 * a2 + l * a4 * a2 - a1 * a4 - a4 * a2 - a1 - a2) /
-		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - 1. / 2;
+	double ans = exp(2 * t) * (l * a3 * a1 * fc - a1 * l * a4 * fc - l * a3 * a2 * fc + l * a4 * a2 * fc + a1 * a4 * fc - a2 * a3 * fc + 2 * a1 - 2 * a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) + fc*t / 2
+		- (exp(2 * l) * fc * (a2 * a3 + a2 * a4) - l * a3 * a1 * fc + a1 * l * a4 * fc - l * a3 * a2 * fc + l * a4 * a2 * fc - a1 * a4 * fc - a4 * a2 * fc - 2 * a1 - 2 * a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - fc / 2;
 	return ans;
 }
 double dr(double t, double r, double s);
