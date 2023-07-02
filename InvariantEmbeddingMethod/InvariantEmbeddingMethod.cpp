@@ -4,10 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
-#include <vector>
-#include <tuple>
 #include <math.h>
-
+#include <ctime>
 using namespace std;
 
 namespace m752
@@ -43,12 +41,6 @@ namespace m752
 using namespace m752;
 double TrueAnswerX(double t)
 {
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 3 / (4 * exp(2 * l)); //this is for 1,0,1,1 stack of alpha
-	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3))
-		//- t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2 * l) - 3));// this is for 1,2,1,1.5 stack of alpha
-	//return exp(2 * t) / 4 - t / 2 - exp(2 * l) / 4 + l / 2 + 1; // this is for 1,1,1,0
-	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,0
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,1
 	double ans = exp(2 * t) * (l * a3 * a1*fc - a1 * l * a4*fc - l * a3 * a2*fc + l * a4 * a2*fc + a1 * a4*fc - a2 * a3*fc + 2 * a1 - 2 * a2) /
 		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - fc*t / 2
 		+ (exp(2 * l) *fc* (a2 * a3 + a2 * a4) - l * a3 * a1*fc + a1 * l * a4*fc - l * a3 * a2*fc + l * a4 * a2*fc - a1 * a4*fc - a4 * a2*fc - 2*a1 - 2*a2) /
@@ -57,12 +49,6 @@ double TrueAnswerX(double t)
 }
 double TrueAnswerY(double t)
 {
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 + 3 / (4 * exp(2 * l)) -1./2; //this is for 1,0,1,1 stack of alpha
-	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) 
-		//+ t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2; // this is for 1,2,1,1.5 stack of alpha
-	//return exp(2 * t) / 4 + t / 2 + exp(2 * l) / 4 - l / 2 - 3. / 2; // this is for 1,1,1,0
-	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,0
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,1
 	double ans = exp(2 * t) * (l * a3 * a1 * fc - a1 * l * a4 * fc - l * a3 * a2 * fc + l * a4 * a2 * fc + a1 * a4 * fc - a2 * a3 * fc + 2 * a1 - 2 * a2) /
 		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) + fc*t / 2
 		- (exp(2 * l) * fc * (a2 * a3 + a2 * a4) - l * a3 * a1 * fc + a1 * l * a4 * fc - l * a3 * a2 * fc + l * a4 * a2 * fc - a1 * a4 * fc - a4 * a2 * fc - 2 * a1 - 2 * a2) /
@@ -262,22 +248,32 @@ void PrintVector(vector<double> matrix)
 double ErrorCount(double h)
 {
 	double err = 0;
-	//vector<vector<double>>  rs = vec_r_s(h);
 
-	vector<double> r = vec_r_s(h)[0], s = vec_r_s(h)[1];
-
+	vector<vector<double>>  rs = vec_r_s(h);
+	vector<double> r = rs[0], s = rs[1];
+	rs.resize(0);
 	//PrintVector(r);
 	//PrintVector(s);
 
 	vector< vector<double>> p = vec_p(h, r, s);
 	vector< vector<double>> q = vec_q(h, r, s);
 
-	vector<double> m = vec_m_n(h, r, s)[0], n = vec_m_n(h, r, s)[1];
+	vector<vector<double>>  mn = vec_m_n(h, r, s);
+	vector<double> m = mn[0], n = mn[1];
+	mn.resize(0);
+	r.resize(0);
+	s.resize(0);
 	//PrintVector(m);
 	//PrintVector(n);
 	vector<vector<double>> u = vec_u(h, m, n, p);
 	vector<vector<double>> v = vec_v(h, m, n, q);
-	
+	for (int i = 0; i < u.size()-1; i++)
+	{
+		u[i].resize(0);
+		v[i].resize(0);
+		p[i].resize(0);
+		q[i].resize(0);
+	}
 	//PrintMatrix(u);
 	//PrintMatrix(p);
 	
@@ -289,7 +285,7 @@ double ErrorCount(double h)
 	}
 	//PrintVector(x);
 	double koord = 0;
-	cout << "U            P          X           TrueX       currErr\n";
+	//cout << "U            P          X           TrueX       currErr\n";
 	for (int i = 0; i < l /(h) + 1; i++)
 	{
 		double temp_otv = x[i];
@@ -297,14 +293,14 @@ double ErrorCount(double h)
 		{
 			err = abs(temp_otv - TrueAnswerX(koord));
 		}
-		cout << u[u.size() - 1][i] <<"   "<< +p[p.size() - 1][i] <<"   "<< temp_otv 
-			<< "  " << TrueAnswerX(koord) << "  " << abs(temp_otv - TrueAnswerX(koord)) << endl;
+		//cout << u[u.size() - 1][i] <<"   "<< +p[p.size() - 1][i] <<"   "<< temp_otv 
+			//<< "  " << TrueAnswerX(koord) << "  " << abs(temp_otv - TrueAnswerX(koord)) << endl;
 		koord += h;
 	}
 	koord = 0;
 	double errY = 0;
 	cout << "\n\n";
-	cout << "V            Q          Y           TrueY       currErr\n";
+	//cout << "V            Q          Y           TrueY       currErr\n";
 	for (int i = 0; i < l / (h) + 1; i++)
 	{
 		double temp_otv = y[i];
@@ -312,8 +308,8 @@ double ErrorCount(double h)
 		{
 			errY = abs(temp_otv - TrueAnswerY(koord));
 		}
-		cout << v[v.size() - 1][i] << "   " << +q[q.size() - 1][i] << "   " << temp_otv
-			<< "  " << TrueAnswerY(koord) << "  " << abs(temp_otv - TrueAnswerY(koord)) << endl;
+		//cout << v[v.size() - 1][i] << "   " << +q[q.size() - 1][i] << "   " << temp_otv
+			//<< "  " << TrueAnswerY(koord) << "  " << abs(temp_otv - TrueAnswerY(koord)) << endl;
 		koord += h;
 	}
 	cout << "Y's Error is: " << errY << endl;
@@ -329,10 +325,11 @@ double ErrorCount(double h)
 int main()
 {
 	//EilerMeth(0.01);
-	double h = 1e-2;
+	double h = 1e-4;
 	cout << "---_---" << endl;
 	double err = ErrorCount(h);
-	cout << "Error is: " << err << " h is: " << h;
+	cout << "X'Error is: " << err << " h is: " << h<<endl;
+	cout << "runtime of InvEmbedding = " << clock() / 1000.0 << endl;
 	return 0;
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
