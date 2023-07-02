@@ -13,10 +13,10 @@ using namespace std;
 namespace m752
 {
 	const double l = 1;
-	const double a1 = 1.;
-	const double a2 = 0;
-	const double a3 = 1.;
-	const double a4 = 1.;
+	const double a1 = 2;
+	const double a2 = 1;
+	const double a3 = 1;
+	const double a4 = 1;
 	double a(double t)
 	{
 		return 1;
@@ -40,7 +40,34 @@ namespace m752
 }
 
 using namespace m752;
-
+double TrueAnswerX(double t)
+{
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 3 / (4 * exp(2 * l)); //this is for 1,0,1,1 stack of alpha
+	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3))
+		//- t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2 * l) - 3));// this is for 1,2,1,1.5 stack of alpha
+	//return exp(2 * t) / 4 - t / 2 - exp(2 * l) / 4 + l / 2 + 1; // this is for 1,1,1,0
+	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,0
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,1
+	double ans = exp(2 * t) * (l * a3 * a1 - a1 * l * a4 - l * a3 * a2 + l * a4 * a2 + a1 * a4 - a2 * a3 + 2 * a1 - 2 * a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - t / 2
+		+ (exp(2 * l) * (a2 * a3 + a2 * a4) - l * a3 * a1 + a1 * l * a4 - l * a3 * a2 + l * a4 * a2 - a1 * a4 - a4 * a2 - a1 - a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4));
+	return ans;
+}
+double TrueAnswerY(double t)
+{
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 + 3 / (4 * exp(2 * l)) -1./2; //this is for 1,0,1,1 stack of alpha
+	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) 
+		//+ t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2; // this is for 1,2,1,1.5 stack of alpha
+	//return exp(2 * t) / 4 + t / 2 + exp(2 * l) / 4 - l / 2 - 3. / 2; // this is for 1,1,1,0
+	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,0
+	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,1
+	double ans = exp(2 * t) * (l * a3 * a1 - a1 * l * a4 - l * a3 * a2 + l * a4 * a2 + a1 * a4 - a2 * a3 + 2 * a1 - 2 * a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) + t / 2
+		- (exp(2 * l) * (a2 * a3 + a2 * a4) - l * a3 * a1 + a1 * l * a4 - l * a3 * a2 + l * a4 * a2 - a1 * a4 - a4 * a2 - a1 - a2) /
+		(2 * (exp(2 * l) * (a1 * a3 + a1 * a4 - a2 * a3 - a2 * a4) - a1 * a3 + a1 * a4 - a2 * a3 + a2 * a4)) - 1. / 2;
+	return ans;
+}
 double dr(double t, double r, double s);
 double ds(double t, double r, double s);
 
@@ -230,24 +257,7 @@ void PrintVector(vector<double> matrix)
 	
 	cout << "--------------------------------------" << endl;
 }
-double TrueAnswerX(double t)
-{
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 3 / (4 * exp(2 * l)); //this is for 1,0,1,1 stack of alpha
-	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3))
-		//- t / 2 - (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2 * l) - 3));// this is for 1,2,1,1.5 stack of alpha
-	//return exp(2 * t) / 4 - t / 2 - exp(2 * l) / 4 + l / 2 + 1; // this is for 1,1,1,0
-	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,0
-	return 3 * exp(2 * t) / (4 * exp(2 * l)) - t / 2 - 1. / 4; // this is for 1,-1,1,1
-}
-double TrueAnswerY(double t)
-{
-	//return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 + 3 / (4 * exp(2 * l)) -1./2; //this is for 1,0,1,1 stack of alpha
-	//return -exp(2 * t) * (l - 5) / (2 * (5 * exp(2 * l) - 3)) 
-		//+ t / 2 + (3 * l - 21 + 10 * exp(2 * l)) / (2 * (5 * exp(2*l) - 3)) -1./2; // this is for 1,2,1,1.5 stack of alpha
-	//return exp(2 * t) / 4 + t / 2 + exp(2 * l) / 4 - l / 2 - 3. / 2; // this is for 1,1,1,0
-	//return exp(2 * t) * (5 + 2 * l) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,0
-	return 3 * exp(2 * t) / (4 * exp(2 * l)) + t / 2 - 1. / 4; // this is for 1,-1,1,1
-}
+
 double ErrorCount(double h)
 {
 	double err = 0;
