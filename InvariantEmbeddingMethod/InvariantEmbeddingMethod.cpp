@@ -116,15 +116,16 @@ void TargetMethod(double q_con, double EI_x, double q, double l, double h)
 }
 int main()
 {
-    double h = 1e-2;
-    double l = 10.;
+    double h = 1e-3;
+    double l = 1.;
     double q_con = 1.;
     double EI_x = 1.;
     double q_v = 456700;
-    double lambda = 2;
-    double T0 = 300;
+    double lambda = 390;
+    double T0 = 500;
     int degree = 3;
-    vector<double> C = PolyConstructor(degree);
+    //vector<double> C = PolyConstructor(degree);
+    vector<double> C = { 2000,1,5,4 };
     double start_time1 = clock();
     //BridgeMethod(q_con, EI_x, 0, l,h);
     //PlateMethod(T0,q_v, lambda, 0, l, h);
