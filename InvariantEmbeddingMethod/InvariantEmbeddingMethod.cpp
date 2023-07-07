@@ -5,122 +5,63 @@
 #include <vector>
 #include <iomanip>
 #include <vector>
-#include <tuple>
 using namespace std;
 namespace m751
 {
-	double f(double u)
+	double f(double u,double v,double t)
 	{
-		return u;
+		return 1;
 	}
-	double g(double y,double r, double x) // возможен 3й аргумент
+	double g(double u, double v, double t)
 	{
-		return y + 2 * x;
+		return 1;
 	}
-	double a = 0, c = 0;
+	double c = 1; // значение на правом краю
+	double T = 1;
+	double h = 0.05; // шаги Т
+	double delta = 0.05; // шаги С
 }
 using namespace m751;
-
-vector<vector<double>> vec_r(double h) // Inverted array of all a_i of (array of elements where we find one r(a+h,c_j) for all c_j)
+vector<double> vec_r()
 {
-	vector<vector<double>> ans;
-	double a = 1, c = 1;
-	for (int i = 0; i < 1 / h + 1; i++)
+	vector<double> rt;
+	vector<vector<double>> r;
+	for (int i = 0; i < T / h + 1; i++) // шаги по T
 	{
-		vector<double> temp;
-		for (int j = 0; j < 1 / h + 1; j++)
+		vector<double> dc;
+		for (int j = 0; j < T/h+1-i; j++) // шаги по C
 		{
-			temp.push_back(c + h * g(c, 0, a));
-			c -= h;
+			if (i == 0)
+			{
+				dc.push_back(0);
+			}
+			else
+			{
+				double temp = r[i - 1][j] + h * (f(r[i - 1][j], j * h, (i - 1) * h) - g(r[i - 1][j], j * h, (i - 1) * h)
+					* (r[i - 1][j + 1] - r[i - 1][j]) / delta);
+				dc.push_back(temp);
+			}
 		}
-		ans.push_back(temp);
-		a -= h;
+		r.push_back(dc);
 	}
-	return ans;
+	for (int i = 0; i < T / h + 1; i++)
+	{
+		rt.push_back(r[i][0]);
+	}
+	return rt;
 }
-vector<vector<double>> c_dj(vector<vector<double>> r_c,double h)
+vector<double> vec_u()
 {
+	return { 0 };
+}
 
-}
-int find_index(double x,double delta)
-{
-	int i = 0;
-	while (abs(i - x / delta) > 1e-5)
-	{
-		i++;
-	}
-	return i;
-}
-double r(double a, double c,double delta, vector<vector<double>> r_c)
-{
-	int i = find_index(a, delta), j = find_index(c, delta);
-	return r(a + delta, c + r_c[i+1][j] * delta, delta,r_c) - delta * g(c, 0, a);
-}
-double RightAns(double x)
-{
-	double ans = -2 * exp(-x) / (exp(1) + exp(-1)) + 2 * exp(x) / (exp(1) + exp(-1)) - 2 * x;
-	return ans;
-}
-vector<double> EilerMeth(double h);
-double ErrorCount()
-{
-	double h = 0.01;
-	vector<double> y = EilerMeth(h);
-	double x = 0;
-	double err = 0;
-	cout << "Y   TrueY  currErr\n";
-	for (int i = 0; i < y.size(); i++) 
-	{
-		if (abs(y[i]-RightAns(x))>err)
-		{
-			err = abs(y[i] - RightAns(x));
-		}
-		cout << y[i] << "  " << RightAns(x) << "  " << abs(y[i] - RightAns(x)) << endl;
-		x += h;
-	}
-	return err;
-}
-void Outcmd(vector<double> y, vector<double> u, double h);
-vector<double> EilerMeth(double h)
-{
-	vector<double> y, u;
-	double x = 0;
-	y.push_back(c);
-	vector<vector<double>> r_c = vec_r(h);
-	u.push_back(r(a, c, h,r_c));
-	while (x <= 1)
-	{
-		double tempY, tempU;
-		double Yn, Un;
-		Yn = y[y.size() - 1];
-		Un = u[u.size() - 1];
-		tempY = Yn + h * f(Un);
-		tempU = Un + h * g(Yn, 0, x);
-		x += h;
-		y.push_back(tempY);
-		u.push_back(tempU);
-	}
-	//Outcmd(y, u, h);
-	return y;
-}
-void Outcmd(vector<double> y, vector<double> u,double h)
-{
-	cout << "table of contents: x u y columns\n";
-	double tempX = 0;
-	for (int i = 0; i < y.size(); i++)
-	{
-		double  tempY, tempU;
-		tempY = y[i];
-		tempU = u[i];
-		cout << tempX << " " << tempU << " " << tempY << endl;
-		tempX += h;
-	}
-}
 int main()
 {
-	//EilerMeth(0.01);
-	double err =ErrorCount();
-	cout << "Error is: " << err;
+	vector<double> r=vec_r();
+	for (int i = 0; i < T / h + 1; i++)
+	{
+		cout << r[i] << endl;
+	}
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
