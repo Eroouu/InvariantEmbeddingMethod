@@ -6,25 +6,25 @@
 #include <iomanip>
 #include <vector>
 using namespace std;
-namespace m751
+namespace m1141
 {
 	double f(double u,double v,double t)
 	{
-		return 1;
+		return v;
 	}
 	double g(double u, double v, double t)
 	{
-		return 1;
+		return (1-t*t)*u+exp(-t);
 	}
-	double c = 1; // значение на правом краю
+	double c = 3; // значение на правом краю
 	double T = 1;
 	double h = 0.05; // шаги Т
 	double delta = 0.05; // шаги С
 }
-using namespace m751;
-vector<double> vec_r()
+using namespace m1141;
+vector<vector<double>> vec_r()
 {
-	vector<double> rt;
+	
 	vector<vector<double>> r;
 	for (int i = 0; i < T / h + 1; i++) // шаги по T
 	{
@@ -37,31 +37,90 @@ vector<double> vec_r()
 			}
 			else
 			{
-				double temp = r[i - 1][j] + h * (f(r[i - 1][j], j * h, (i - 1) * h) - g(r[i - 1][j], j * h, (i - 1) * h)
-					* (r[i - 1][j + 1] - r[i - 1][j]) / delta);
+				double temp = r[i - 1][j] + h * (f(r[i - 1][j], c + j * h, (i - 1) * h) 
+					- g(r[i - 1][j], c + j * h, (i - 1) * h) * (r[i - 1][j + 1] - r[i - 1][j]) / delta);
 				dc.push_back(temp);
 			}
 		}
 		r.push_back(dc);
 	}
-	for (int i = 0; i < T / h + 1; i++)
-	{
-		rt.push_back(r[i][0]);
-	}
-	return rt;
+	return r;
 }
-vector<double> vec_u()
+vector<vector<vector<double>>> vec_v(vector<vector<double>> r)
 {
-	return { 0 };
+	vector<vector<vector<double>>> v;
+	for (int i = 0; i < T / h + 1; i++) // шаги по T
+	{
+		vector<vector<double>> dc;
+		for (int j = 0; j < i+1; j++) // шаги по t
+		{
+			vector<double> dt;
+			for (int k = 0; k < T/h+1-i; k++) // шаги по C
+			{
+				if (j==i)
+				{
+					dt.push_back(c);
+				}
+				else
+				{
+					double temp;
+					temp = v[i-1][j][k] + h * (g(r[i-1][k], c + k * delta, j * h)
+						* (v[i-1][j][k+1] - v[i-1][j][k]) / delta);
+					dt.push_back(temp);
+				}
+			}
+			dc.push_back(dt);
+		}
+		v.push_back(dc);
+	}
+	return v;
+}
+vector<vector<vector<double>>> vec_u(vector<vector<double>> r)
+{
+	vector<vector<vector<double>>> u;
+	for (int i = 0; i < T / h + 1; i++) // шаги по T
+	{
+		vector<vector<double>> dc;
+		for (int j = 0; j < i + 1; j++) // шаги по t
+		{
+			vector<double> dt;
+			for (int k = 0; k < T / h + 1 - i; k++) // шаги по C
+			{
+				if (j == i)
+				{
+					dt.push_back(r[k][i]);
+				}
+				else
+				{
+					double temp;
+					temp = u[i - 1][j][k] + h * (g(r[i - 1][k], c + k * delta, j * h)
+						* (u[i - 1][j][k + 1] - u[i - 1][j][k]) / delta);
+					dt.push_back(temp);
+				}
+			}
+			dc.push_back(dt);
+		}
+		u.push_back(dc);
+	}
+	return u;
 }
 
 int main()
 {
-	vector<double> r=vec_r();
-	for (int i = 0; i < T / h + 1; i++)
+	vector<vector<double>> r=vec_r();
+	vector<vector<vector<double>>> v = vec_v(r);
+	vector<vector<vector<double>>> u = vec_u(r);
+	for (int i = 0; i < T / h + 1; i++) // шаги по T
 	{
-		cout << r[i] << endl;
+		for (int j = 0; j < i + 1; j++) // шаги по t
+		{
+			for (int k = 0; k < T / h + 1 - i; k++) // шаги по C
+			{
+				cout << u[i][j][k] << endl;
+			}
+		}
 	}
+	
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
